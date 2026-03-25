@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Rise - Our Mission & Story</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'rise-blue': '#364463',
+                        'rise-brown': '#a37d64',
+                        'rise-orange': '#e4905c',
+                        'rise-gold': '#eac351',
+                        'rise-cream': '#ece6e1',
+                        'rise-slate': '#3c454b',
+                    },
+                    fontFamily: {
+                        'nunito': ['Nunito', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+        }
+        .gradient-warm {
+            background: linear-gradient(135deg, #e4905c 0%, #eac351 100%);
+        }
+        .gradient-warm-vertical {
+            background: #e4905c !important;
+            background: linear-gradient(to bottom, #d4784a 0%, #e4905c 40%, #d4a03a 100%) !important;
+        }
+        .hero-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+    </style>
+</head>
+<body class="bg-rise-cream min-h-screen">
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0">
+                    <a href="/" class="flex items-center">
+                        <img src="logo.png" alt="Rise" class="h-8 w-auto">
+                    </a>
+                </div>
+
+                <!-- Navigation Links -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="/" class="text-rise-slate hover:text-rise-blue font-semibold transition-colors">Home</a>
+                    <a href="/about.html" class="text-rise-blue font-semibold">About</a>
+                    <a href="#" class="text-rise-slate hover:text-rise-blue font-semibold transition-colors">Features</a>
+                    <a href="#" class="text-rise-slate hover:text-rise-blue font-semibold transition-colors">Contact</a>
+                </div>
+
+                <!-- CTA Buttons -->
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="#" class="text-rise-blue font-semibold hover:text-rise-brown transition-colors">Sign In</a>
+                    <a href="#" class="bg-rise-blue hover:bg-rise-blue/90 text-white px-6 py-3 rounded-2xl font-semibold text-sm transition-all">
+                        Get Started
+                    </a>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button onclick="toggleMobileMenu()" class="text-rise-blue p-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t">
+            <div class="px-4 py-4 space-y-3">
+                <a href="/" class="block text-rise-slate font-semibold py-2">Home</a>
+                <a href="/about.html" class="block text-rise-blue font-semibold py-2">About</a>
+                <a href="#" class="block text-rise-slate font-semibold py-2">Features</a>
+                <a href="#" class="block text-rise-slate font-semibold py-2">Contact</a>
+                <hr class="my-2">
+                <a href="#" class="block text-rise-blue font-semibold py-2">Sign In</a>
+                <a href="#" class="block bg-rise-blue text-white px-6 py-3 rounded-2xl font-semibold text-sm text-center">Get Started</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="gradient-warm hero-pattern pt-32 pb-20 md:pt-40 md:pb-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-6">
+                Our Mission
+            </h1>
+            <p class="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed">
+                We believe everyone deserves access to quality financial education and personalized guidance to achieve their dreams.
+            </p>
+        </div>
+    </section>
+
+    <!-- Story Section -->
+    <section class="py-20 md:py-32 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div>
+                    <span class="text-rise-orange font-bold text-sm tracking-wider uppercase">Our Story</span>
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-rise-blue mt-2 mb-6">
+                        Built to Bridge the Financial Literacy Gap
+                    </h2>
+                    <div class="space-y-4 text-rise-slate/80 text-lg leading-relaxed">
+                        <p>
+                            Rise was born from a simple observation: too many hardworking people struggle with their finances not because they lack discipline, but because they've never had access to proper financial education.
+                        </p>
+                        <p>
+                            We partnered with credit unions who share our vision—institutions that genuinely care about their members' financial wellbeing, not just their account balances.
+                        </p>
+                        <p>
+                            Today, Rise connects thousands of members with certified financial coaches, interactive educational resources, and tools that make financial planning accessible to everyone.
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&h=450&fit=crop" 
+                         alt="Diverse team collaborating together" 
+                         class="rounded-3xl w-full object-cover aspect-[4/3] shadow-lg">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Values Section -->
+    <section class="py-20 md:py-32 bg-rise-cream">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-rise-orange font-bold text-sm tracking-wider uppercase">Our Values</span>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-rise-blue mt-2 mb-4">
+                    What Drives Us
+                </h2>
+                <p class="text-xl text-rise-slate/80">
+                    These core values guide everything we do at Rise.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Value 1 -->
+                <div class="bg-white rounded-3xl p-8 text-center shadow-sm">
+                    <div class="w-16 h-16 gradient-warm rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-rise-blue mb-3">Compassion</h3>
+                    <p class="text-rise-slate/70">
+                        We meet people where they are, without judgment, and guide them forward with understanding.
+                    </p>
+                </div>
+
+                <!-- Value 2 -->
+                <div class="bg-white rounded-3xl p-8 text-center shadow-sm">
+                    <div class="w-16 h-16 bg-rise-blue rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-rise-blue mb-3">Trust</h3>
+                    <p class="text-rise-slate/70">
+                        We protect member privacy and build relationships through transparency and reliability.
+                    </p>
+                </div>
+
+                <!-- Value 3 -->
+                <div class="bg-white rounded-3xl p-8 text-center shadow-sm">
+                    <div class="w-16 h-16 bg-rise-brown rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-rise-blue mb-3">Empowerment</h3>
+                    <p class="text-rise-slate/70">
+                        We give people the tools and knowledge to take control of their financial futures.
+                    </p>
+                </div>
+
+                <!-- Value 4 -->
+                <div class="bg-white rounded-3xl p-8 text-center shadow-sm">
+                    <div class="w-16 h-16 bg-rise-gold rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-rise-blue mb-3">Accessibility</h3>
+                    <p class="text-rise-slate/70">
+                        Financial education should be available to everyone, regardless of background or language.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Impact Section -->
+    <section class="py-20 md:py-32 bg-rise-blue">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-rise-gold font-bold text-sm tracking-wider uppercase">Our Impact</span>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-white mt-2 mb-4">
+                    Real Results, Real Lives Changed
+                </h2>
+                <p class="text-xl text-white/80">
+                    The numbers tell the story of thousands of people taking control of their finances.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="text-center">
+                    <p class="text-5xl md:text-6xl font-extrabold text-rise-gold mb-2">10K+</p>
+                    <p class="text-white/80 text-lg">Members Served</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-5xl md:text-6xl font-extrabold text-rise-gold mb-2">50+</p>
+                    <p class="text-white/80 text-lg">Partner Institutions</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-5xl md:text-6xl font-extrabold text-rise-gold mb-2">89%</p>
+                    <p class="text-white/80 text-lg">Completion Rate</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-5xl md:text-6xl font-extrabold text-rise-gold mb-2">$2M+</p>
+                    <p class="text-white/80 text-lg">Member Savings</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="py-20 md:py-32 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-rise-orange font-bold text-sm tracking-wider uppercase">Our Team</span>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-rise-blue mt-2 mb-4">
+                    The People Behind Rise
+                </h2>
+                <p class="text-xl text-rise-slate/80">
+                    Passionate experts dedicated to financial wellness.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                <!-- Team Member 1 -->
+                <div class="text-center">
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=320&h=320&fit=crop&crop=face" 
+                         alt="Jennifer Martinez" class="w-40 h-40 rounded-full mx-auto mb-6 object-cover shadow-lg">
+                    <h3 class="text-xl font-bold text-rise-blue">Jennifer Martinez</h3>
+                    <p class="text-rise-brown font-semibold">Founder & CEO</p>
+                    <p class="text-rise-slate/70 mt-3 text-sm">
+                        15+ years in financial services and community development.
+                    </p>
+                </div>
+
+                <!-- Team Member 2 -->
+                <div class="text-center">
+                    <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=320&h=320&fit=crop&crop=face" 
+                         alt="David Chen" class="w-40 h-40 rounded-full mx-auto mb-6 object-cover shadow-lg">
+                    <h3 class="text-xl font-bold text-rise-blue">David Chen</h3>
+                    <p class="text-rise-brown font-semibold">Head of Coaching</p>
+                    <p class="text-rise-slate/70 mt-3 text-sm">
+                        Certified Financial Counselor with a passion for education.
+                    </p>
+                </div>
+
+                <!-- Team Member 3 -->
+                <div class="text-center">
+                    <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=320&h=320&fit=crop&crop=face" 
+                         alt="Maria Rodriguez" class="w-40 h-40 rounded-full mx-auto mb-6 object-cover shadow-lg">
+                    <h3 class="text-xl font-bold text-rise-blue">Maria Rodriguez</h3>
+                    <p class="text-rise-brown font-semibold">Partnership Director</p>
+                    <p class="text-rise-slate/70 mt-3 text-sm">
+                        Former credit union executive bringing institutional expertise.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partner With Us CTA -->
+    <section class="py-20 md:py-32 bg-rise-cream">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div>
+                    <span class="text-rise-orange font-bold text-sm tracking-wider uppercase">Partner With Us</span>
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-rise-blue mt-2 mb-6">
+                        Bring Rise to Your Credit Union
+                    </h2>
+                    <p class="text-lg text-rise-slate/80 mb-6 leading-relaxed">
+                        Join the growing network of forward-thinking institutions that are investing in their members' financial futures. Our white-label platform integrates seamlessly with your brand.
+                    </p>
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-start">
+                            <svg class="w-6 h-6 text-rise-orange mr-3 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="text-rise-slate/80">Full white-label customization</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-6 h-6 text-rise-orange mr-3 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="text-rise-slate/80">Dedicated success manager</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-6 h-6 text-rise-orange mr-3 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="text-rise-slate/80">Comprehensive analytics and reporting</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-6 h-6 text-rise-orange mr-3 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="text-rise-slate/80">Bilingual content library</span>
+                        </li>
+                    </ul>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="#" class="bg-rise-blue hover:bg-rise-blue/90 text-white px-8 py-4 rounded-2xl font-bold text-center transition-all">
+                            Schedule a Demo
+                        </a>
+                        <a href="#" class="bg-transparent hover:bg-rise-blue/10 text-rise-blue border-2 border-rise-blue px-8 py-4 rounded-2xl font-bold text-center transition-all">
+                            Download Brochure
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=500&h=400&fit=crop" 
+                         alt="Professional meeting discussing partnership" 
+                         class="rounded-3xl w-full object-cover aspect-[5/4] shadow-lg">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 hero-pattern" style="background: linear-gradient(to bottom, #d4784a 0%, #e4905c 40%, #d4a03a 100%)">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-white mb-6">
+                Ready to Start Your Journey?
+            </h2>
+            <p class="text-xl text-white/90 mb-10 max-w-2xl mx-auto">
+                Join thousands of members who are taking control of their financial futures with Rise.
+            </p>
+            <a href="#" class="inline-block bg-rise-blue hover:bg-rise-blue/90 text-white px-10 py-4 rounded-2xl font-bold text-lg transition-all shadow-lg hover:shadow-xl">
+                Get Started Free
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-rise-blue text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-12">
+                <!-- Brand -->
+                <div>
+                    <div class="flex items-center mb-6">
+                        <img src="logo.png" alt="Rise" class="h-7 w-auto brightness-0 invert">
+                    </div>
+                    <p class="text-white/70 leading-relaxed">
+                        Empowering financial wellness through education, coaching, and community.
+                    </p>
+                </div>
+
+                <!-- For Members -->
+                <div>
+                    <h4 class="font-bold text-lg mb-4">For Members</h4>
+                    <ul class="space-y-3 text-white/70">
+                        <li><a href="#" class="hover:text-white transition-colors">Get Started</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Financial Coaching</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Educational Resources</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Budget Calculator</a></li>
+                    </ul>
+                </div>
+
+                <!-- For Institutions -->
+                <div>
+                    <h4 class="font-bold text-lg mb-4">For Institutions</h4>
+                    <ul class="space-y-3 text-white/70">
+                        <li><a href="#" class="hover:text-white transition-colors">Schedule Demo</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Pricing</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Case Studies</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Partner Program</a></li>
+                    </ul>
+                </div>
+
+                <!-- Company -->
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Company</h4>
+                    <ul class="space-y-3 text-white/70">
+                        <li><a href="/about.html" class="hover:text-white transition-colors">About Us</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Support</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-white/20 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-white/60 text-sm">
+                    © 2025 Rise Financial Wellness. All rights reserved.
+                </p>
+                <div class="flex gap-6 mt-4 md:mt-0">
+                    <a href="#" class="text-white/60 hover:text-white transition-colors">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                    </a>
+                    <a href="#" class="text-white/60 hover:text-white transition-colors">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                    </a>
+                    <a href="#" class="text-white/60 hover:text-white transition-colors">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rise - Financial Education & Coaching</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'rise-blue': '#364463',
+                        'rise-brown': '#a37d64',
+                        'rise-orange': '#e4905c',
+                        'rise-gold': '#eac351',
+                        'rise-cream': '#ece6e1',
+                        'rise-slate': '#3c454b',
+                    },
+                    fontFamily: {
+                        'nunito': ['Nunito', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+        }
+        .gradient-warm {
+            background: linear-gradient(135deg, #e4905c 0%, #eac351 100%);
+        }
+        .gradient-warm-vertical {
+            background: #e4905c !important;
+            background: linear-gradient(to bottom, #d4784a 0%, #e4905c 40%, #d4a03a 100%) !important;
+        }
+        .gradient-warm-soft {
+            background: linear-gradient(180deg, #e4905c 0%, #eac351 50%, #ece6e1 100%);
+        }
+        .toggle-active {
+            background-color: #364463;
+            color: white;
+        }
+        .toggle-inactive {
+            background-color: transparent;
+            color: #364463;
+        }
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(54, 68, 99, 0.15);
+        }
+        .hero-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+    </style>
+</head>
+<body class="bg-rise-cream min-h-screen">
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0">
+                    <a href="/" class="flex items-center">
+                        <img src="logo.png" alt="Rise" class="h-8 w-auto">
+                    </a>
+                </div>
+
+                <!-- Audience Toggle -->
+                <div class="hidden md:flex items-center bg-rise-cream rounded-full p-1">
+                    <button id="toggle-members" onclick="setAudience('members')" 
+                            class="px-6 py-2 rounded-full font-semibold text-sm tracking-wide transition-all duration-300 toggle-active">
+                        For Members
+                    </button>
+                    <button id="toggle-institutions" onclick="setAudience('institutions')" 
+                            class="px-6 py-2 rounded-full font-semibold text-sm tracking-wide transition-all duration-300 toggle-inactive">
+                        For Institutions
+                    </button>
+                    <button id="toggle-community" onclick="setAudience('community')" 
+                            class="px-6 py-2 rounded-full font-semibold text-sm tracking-wide transition-all duration-300 toggle-inactive">
+                        For Community
+                    </button>
+                </div>
+
+                <!-- CTA Buttons -->
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="#" class="text-rise-blue font-semibold hover:text-rise-brown transition-colors">Sign In</a>
+                    <a href="#" class="bg-rise-blue hover:bg-rise-blue/90 text-white px-6 py-3 rounded-2xl font-semibold text-sm transition-all">
+                        Get Started
+                    </a>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button onclick="toggleMobileMenu()" class="text-rise-blue p-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t">
+            <div class="px-4 py-4 space-y-3">
+                <div class="flex bg-rise-cream rounded-full p-1 mb-4">
+                    <button onclick="setAudience('members')" class="flex-1 px-4 py-2 rounded-full font-semibold text-sm toggle-active" id="mobile-toggle-members">
+                        Members
+                    </button>
+                    <button onclick="setAudience('institutions')" class="flex-1 px-4 py-2 rounded-full font-semibold text-sm toggle-inactive" id="mobile-toggle-institutions">
+                        Institutions
+                    </button>
+                    <button onclick="setAudience('community')" class="flex-1 px-4 py-2 rounded-full font-semibold text-sm toggle-inactive" id="mobile-toggle-community">
+                        Community
+                    </button>
+                </div>
+                <a href="#" class="block text-rise-blue font-semibold py-2">Sign In</a>
+                <a href="#" class="block bg-rise-blue text-white px-6 py-3 rounded-2xl font-semibold text-sm text-center">Get Started</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section - Members -->
+    <section id="hero-members" class="hero-pattern pt-32 pb-20 md:pt-40 md:pb-32" style="background: linear-gradient(to bottom, #d4784a 0%, #e4905c 40%, #d4a03a 100%)">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="text-white">
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-6">
+                        Take Control of Your <span class="text-rise-blue">Financial Future</span>
+                    </h1>
+                    <p class="text-xl md:text-2xl opacity-90 mb-8 leading-relaxed">
+                        Free financial education, personalized coaching, and tools to help you build the life you deserve.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="#" class="bg-rise-blue hover:bg-rise-blue/90 text-white px-8 py-4 rounded-2xl font-bold text-lg text-center transition-all shadow-lg hover:shadow-xl">
+                            Start Your Journey
+                        </a>
+                        <a href="#" class="bg-white/20 hover:bg-white/30 text-white border-2 border-white px-8 py-4 rounded-2xl font-bold text-lg text-center transition-all backdrop-blur-sm">
+                            Watch Demo
+                        </a>
+                    </div>
+                    <div class="mt-10 flex items-center gap-6">
+                        <div class="flex -space-x-3">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face" alt="" class="w-10 h-10 rounded-full border-2 border-white object-cover">
+                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&crop=face" alt="" class="w-10 h-10 rounded-full border-2 border-white object-cover">
+                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&h=80&fit=crop&crop=face" alt="" class="w-10 h-10 rounded-full border-2 border-white object-cover">
+                            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&crop=face" alt="" class="w-10 h-10 rounded-full border-2 border-white object-cover">
+                        </div>
+                        <p class="text-white/90">
+                            <span class="font-bold">10,000+</span> members improving their finances
+                        </p>
+                    </div>
+                </div>
+                <div class="relative">
+                    <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?w=600&h=500&fit=crop" 
+                         alt="Person reviewing finances on mobile app" 
+                         class="rounded-3xl shadow-2xl w-full object-cover aspect-[6/5]">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hero Section - Institutions (Hidden by default) -->
+    <section id="hero-institutions" class="hidden bg-rise-blue hero-pattern pt-32 pb-20 md:pt-40 md:pb-32">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="text-white">
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-6">
+                        Empower Your Members with <span class="text-rise-gold">Financial Wellness</span>
+                    </h1>
+                    <p class="text-xl md:text-2xl opacity-90 mb-8 leading-relaxed">
+                        White-label financial education platform that strengthens member relationships and drives engagement.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="#" class="gradient-warm hover:opacity-90 text-white px-8 py-4 rounded-2xl font-bold text-lg text-center transition-all shadow-lg hover:shadow-xl">
+                            Schedule Demo
+                        </a>
+                        <a href="#" class="bg-white/10 hover:bg-white/20 text-white border-2 border-white/50 px-8 py-4 rounded-2xl font-bold text-lg text-center transition-all">
+                            View Case Studies
+                        </a>
+                    </div>
+                    <div class="mt-10 grid grid-cols-3 gap-8">
+                        <div>
+                            <p class="text-4xl font-extrabold text-rise-gold">50+</p>
+                            <p class="text-white/80">Credit Unions</p>
+                        </div>
+                        <div>
+                            <p class="text-4xl font-extrabold text-rise-gold">10K+</p>
+                            <p class="text-white/80">Members Served</p>
+                        </div>
+                        <div>
+                            <p class="text-4xl font-extrabold text-rise-gold">89%</p>
+                            <p class="text-white/80">Engagement Rate</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=500&fit=crop" 
+                         alt="Analytics dashboard with data visualization" 
+                         class="rounded-3xl shadow-2xl w-full object-cover aspect-[6/5]">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hero Section - Community (Hidden by default) -->
+    <section id="hero-community" class="hidden bg-rise-brown hero-pattern pt-32 pb-20 md:pt-40 md:pb-32">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="text-white">
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-6">
+                        Expand Your Reach as a <span class="text-rise-gold">Community Partner</span>
+                    </h1>
+                    <p class="text-xl md:text-2xl opacity-90 mb-8 leading-relaxed">
+                        Connect with credit union members who need your services. Manage leads, share resources, and grow your community impact—all from one platform.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="#" class="bg-rise-blue hover:bg-rise-blue/90 text-white px-8 py-4 rounded-2xl font-bold text-lg text-center transition-all shadow-lg hover:shadow-xl">
+                            Become a Partner
+                        </a>
+                        <a href="#" class="bg-white/10 hover:bg-white/20 text-white border-2 border-white/50 px-8 py-4 rounded-2xl font-bold text-lg text-center transition-all">
+                            Learn More
+                        </a>
+                    </div>
+                    <div class="mt-10 grid grid-cols-3 gap-8">
+                        <div>
+                            <p class="text-4xl font-extrabold text-rise-gold">50+</p>
+                            <p class="text-white/80">Credit Union Partners</p>
+                        </div>
+                        <div>
+                            <p class="text-4xl font-extrabold text-rise-gold">Free</p>
+                            <p class="text-white/80">To Join</p>
+                        </div>
+                        <div>
+                            <p class="text-4xl font-extrabold text-rise-gold">Direct</p>
+                            <p class="text-white/80">Lead Access</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative">
+                    <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=600&h=500&fit=crop" 
+                         alt="Community partners collaborating" 
+                         class="rounded-3xl shadow-2xl w-full object-cover aspect-[6/5]">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section - Members -->
+    <section id="features-members" class="py-20 md:py-32 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-rise-blue mb-4">
+                    Everything You Need to Succeed
+                </h2>
+                <p class="text-xl text-rise-slate/80">
+                    Personalized tools and expert guidance to help you achieve your financial goals.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature 1: Financial Coaching -->
+                <div class="bg-rise-cream/50 rounded-3xl p-8 card-hover">
+                    <!-- [PLACEHOLDER: Icon - Chat/coaching icon in rise-orange, 48x48px] -->
+                    <div class="w-14 h-14 gradient-warm rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-rise-blue mb-3">1-on-1 Financial Coaching</h3>
+                    <p class="text-rise-slate/80 leading-relaxed">
+                        Connect with certified financial coaches who understand your unique situation and help you create a personalized plan.
+                    </p>
+                </div>
+
+                <!-- Feature 2: Educational Resources -->
+                <div class="bg-rise-cream/50 rounded-3xl p-8 card-hover">
+                    <div class="w-14 h-14 bg-rise-blue rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-rise-blue mb-3">Educational Library</h3>
+                    <p class="text-rise-slate/80 leading-relaxed">
+                        Access hundreds of articles, videos, and interactive courses covering budgeting, credit, savings, and more.
+                    </p>
+                </div>
+
+                <!-- Feature 3: Financial Assessments -->
+                <div class="bg-rise-cream/50 rounded-3xl p-8 card-hover">
+                    <div class="w-14 h-14 bg-rise-brown rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-rise-blue mb-3">Financial Assessments</h3>
+                    <p class="text-rise-slate/80 leading-relaxed">
+                        Complete guided assessments to understand your current financial health and identify areas for improvement.
+                    </p>
+                </div>
+
+                <!-- Feature 4: Budget Tools -->
+                <div class="bg-rise-cream/50 rounded-3xl p-8 card-hover">
+                    <div class="w-14 h-14 bg-rise-gold rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-rise-blue mb-3">Budget Calculator</h3>
+                    <p class="text-rise-slate/80 leading-relaxed">
+                        Interactive calculators help you create a realistic budget and track your progress toward financial goals.
+                    </p>
+                </div>
+
+                <!-- Feature 5: Progress Tracking -->
+                <div class="bg-rise-cream/50 rounded-3xl p-8 card-hover">
+                    <div class="w-14 h-14 gradient-warm rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-rise-blue mb-3">Track Your Progress</h3>
+                    <p class="text-rise-slate/80 leading-relaxed">
+                        See how far you've come with visual progress tracking and celebrate your financial milestones.
+                    </p>
+                </div>
+
+                <!-- Feature 6: Bilingual Support -->
+                <div class="bg-rise-cream/50 rounded-3xl p-8 card-hover">
+                    <div class="w-14 h-14 bg-rise-blue rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-rise-blue mb-3">English & Spanish</h3>
+                    <p class="text-rise-slate/80 leading-relaxed">
+                        Access all content in your preferred language with full bilingual support throughout the platform.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section - Institutions (Hidden by default) -->
+    <section id="features-institutions" class="hidden py-20 md:py-32 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-rise-blue mb-4">
+                    A Complete Member Financial Wellness Solution
+                </h2>
+                <p class="text-xl text-rise-slate/80">
+                    White-label platform that integrates seamlessly with your brand and existing systems.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Institution Feature 1 -->
+                <div class="bg-rise-cream/50 rounded-3xl p-8 card-hover">
+                    <div class="w-14 h-14 bg-rise-blue rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-rise-blue mb-3">White-Label Branding</h3>
+                    <p class="text-rise-slate/80 leading-relaxed">
+                        Fully customizable platform with your logo, colors, and branding. Members see your credit union, not ours.
+                    </p>
+                </div>
+
+                <!-- Institution Feature 2 -->
+                <div class="bg-rise-cream/50 rounded-3xl p-8 card-hover">
+                    <div class="w-14 h-14 gradient-warm rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-rise-blue mb-3">Member Management</h3>
+                    <p class="text-rise-slate/80 leading-relaxed">
+                        Easy-to-use dashboard to manage members, track engagement, and monitor progress across your organization.
+                    </p>
+                </div>
+
+                <!-- Institution Feature 3 -->
+                <div class="bg-rise-cream/50 rounded-3xl p-8 card-hover">
+                    <div class="w-14 h-14 bg-rise-brown rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-rise-blue mb-3">Analytics & Reporting</h3>
+                    <p class="text-rise-slate/80 leading-relaxed">
+                        Comprehensive reporting on member engagement, program effectiveness, and ROI metrics for leadership.
+                    </p>
+                </div>
+
+                <!-- Institution Feature 4 -->
+                <div class="bg-rise-cream/50 rounded-3xl p-8 card-hover">
+                    <div class="w-14 h-14 bg-rise-gold rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-rise-blue mb-3">Resource Library</h3>
+                    <p class="text-rise-slate/80 leading-relaxed">
+                        Curate and share educational content with your members. Upload custom resources or use our library.
+                    </p>
+                </div>
+
+                <!-- Institution Feature 5 -->
+                <div class="bg-rise-cream/50 rounded-3xl p-8 card-hover">
+                    <div class="w-14 h-14 gradient-warm rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-rise-blue mb-3">Lead Generation</h3>
+                    <p class="text-rise-slate/80 leading-relaxed">
+                        Capture leads from your website and convert them into engaged members with automated follow-up.
+                    </p>
+                </div>
+
+                <!-- Institution Feature 6 -->
+                <div class="bg-rise-cream/50 rounded-3xl p-8 card-hover">
+                    <div class="w-14 h-14 bg-rise-blue rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-rise-blue mb-3">Secure Messaging</h3>
+                    <p class="text-rise-slate/80 leading-relaxed">
+                        Built-in secure messaging between coaches and members with unread notifications and history tracking.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section - Community (Hidden by default) -->
+    <section id="features-community" class="hidden py-20 md:py-32 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-rise-blue mb-4">
+                    Everything You Need to Serve Your Community
+                </h2>
+                <p class="text-xl text-rise-slate/80">
+                    A dedicated partner portal with tools to manage leads, share resources, and track your impact across credit unions.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Community Feature 1: Lead Management -->
+                <div class="bg-rise-cream/50 rounded-3xl p-8 card-hover">
+                    <div class="w-14 h-14 gradient-warm rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-rise-blue mb-3">Lead Management</h3>
+                    <p class="text-rise-slate/80 leading-relaxed">
+                        Receive qualified leads directly from credit union members. Search, filter, and manage all your referrals in one centralized dashboard.
+                    </p>
+                </div>
+
+                <!-- Community Feature 2: Partner Dashboard -->
+                <div class="bg-rise-cream/50 rounded-3xl p-8 card-hover">
+                    <div class="w-14 h-14 bg-rise-blue rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-rise-blue mb-3">Analytics Dashboard</h3>
+                    <p class="text-rise-slate/80 leading-relaxed">
+                        Track lead trends over time, see category breakdowns, and measure your outreach effectiveness with real-time charts and reporting.
+                    </p>
+                </div>
+
+                <!-- Community Feature 3: Resource Sharing -->
+                <div class="bg-rise-cream/50 rounded-3xl p-8 card-hover">
+                    <div class="w-14 h-14 bg-rise-brown rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-rise-blue mb-3">Resource Publishing</h3>
+                    <p class="text-rise-slate/80 leading-relaxed">
+                        Create and share educational resources directly with credit union members. Publish articles, guides, and service information in English and Spanish.
+                    </p>
+                </div>
+
+                <!-- Community Feature 4: Data Export -->
+                <div class="bg-rise-cream/50 rounded-3xl p-8 card-hover">
+                    <div class="w-14 h-14 bg-rise-gold rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-rise-blue mb-3">CSV & Excel Export</h3>
+                    <p class="text-rise-slate/80 leading-relaxed">
+                        Export your leads and data anytime in CSV or Excel format. Filter by date range for easy reporting and integration with your existing tools.
+                    </p>
+                </div>
+
+                <!-- Community Feature 5: Multi-Credit Union -->
+                <div class="bg-rise-cream/50 rounded-3xl p-8 card-hover">
+                    <div class="w-14 h-14 gradient-warm rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-rise-blue mb-3">Multi-Credit Union Reach</h3>
+                    <p class="text-rise-slate/80 leading-relaxed">
+                        Connect with multiple credit unions across different states. Your partner profile and resources are visible to members where you operate.
+                    </p>
+                </div>
+
+                <!-- Community Feature 6: Partner Code -->
+                <div class="bg-rise-cream/50 rounded-3xl p-8 card-hover">
+                    <div class="w-14 h-14 bg-rise-blue rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-rise-blue mb-3">Unique Partner Code</h3>
+                    <p class="text-rise-slate/80 leading-relaxed">
+                        Get a unique partner code to track referrals. Members who sign up through your code are automatically linked to your partner account for seamless attribution.
+                    </p>
+                </div>
+            </div>
+
+            <!-- How It Works -->
+            <div class="mt-20 max-w-4xl mx-auto">
+                <h3 class="text-2xl md:text-3xl font-extrabold text-rise-blue text-center mb-12">
+                    How It Works
+                </h3>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-rise-blue rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span class="text-2xl font-extrabold text-white">1</span>
+                        </div>
+                        <h4 class="font-bold text-rise-blue text-lg mb-2">Apply & Get Approved</h4>
+                        <p class="text-rise-slate/70">Sign up as a community partner. We'll verify your organization and set up your partner profile with your unique code.</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-rise-orange rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span class="text-2xl font-extrabold text-white">2</span>
+                        </div>
+                        <h4 class="font-bold text-rise-blue text-lg mb-2">Share Your Resources</h4>
+                        <p class="text-rise-slate/70">Publish your services, guides, and educational materials. Credit union members discover your resources through the platform.</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-rise-gold rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span class="text-2xl font-extrabold text-white">3</span>
+                        </div>
+                        <h4 class="font-bold text-rise-blue text-lg mb-2">Receive & Manage Leads</h4>
+                        <p class="text-rise-slate/70">Get notified when members request your services. Track, manage, and export leads from your dedicated dashboard.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Proof / Testimonials -->
+    <section class="py-20 md:py-32 bg-rise-cream">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-rise-blue mb-4">
+                    Trusted by Members & Institutions
+                </h2>
+                <p class="text-xl text-rise-slate/80">
+                    See how Rise is making a real difference in financial wellness.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="bg-white rounded-3xl p-8 shadow-lg">
+                    <div class="flex items-center mb-6">
+                        <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=112&h=112&fit=crop&crop=face" 
+                             alt="Maria G." class="w-14 h-14 rounded-full mr-4 object-cover">
+                        <div>
+                            <p class="font-bold text-rise-blue">Maria G.</p>
+                            <p class="text-sm text-rise-slate/60">Rise Member</p>
+                        </div>
+                    </div>
+                    <p class="text-rise-slate/80 leading-relaxed">
+                        "Rise helped me create my first real budget. My coach was so patient and understanding. I've saved more in 3 months than I did all last year!"
+                    </p>
+                    <div class="mt-4 flex text-rise-gold">
+                        ★★★★★
+                    </div>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div class="bg-white rounded-3xl p-8 shadow-lg">
+                    <div class="flex items-center mb-6">
+                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=112&h=112&fit=crop&crop=face" 
+                             alt="James T." class="w-14 h-14 rounded-full mr-4 object-cover">
+                        <div>
+                            <p class="font-bold text-rise-blue">James T.</p>
+                            <p class="text-sm text-rise-slate/60">Credit Union CEO</p>
+                        </div>
+                    </div>
+                    <p class="text-rise-slate/80 leading-relaxed">
+                        "Implementing Rise increased our member engagement by 45%. The white-label solution fits perfectly with our brand and values."
+                    </p>
+                    <div class="mt-4 flex text-rise-gold">
+                        ★★★★★
+                    </div>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div class="bg-white rounded-3xl p-8 shadow-lg">
+                    <div class="flex items-center mb-6">
+                        <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=112&h=112&fit=crop&crop=face" 
+                             alt="Sarah L." class="w-14 h-14 rounded-full mr-4 object-cover">
+                        <div>
+                            <p class="font-bold text-rise-blue">Sarah L.</p>
+                            <p class="text-sm text-rise-slate/60">Rise Member</p>
+                        </div>
+                    </div>
+                    <p class="text-rise-slate/80 leading-relaxed">
+                        "The Spanish language support meant I could finally understand everything. My credit score went up 80 points in 6 months!"
+                    </p>
+                    <div class="mt-4 flex text-rise-gold">
+                        ★★★★★
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logos Section -->
+            <div class="mt-20 text-center">
+                <p class="text-rise-slate/60 mb-8 font-semibold">TRUSTED BY LEADING CREDIT UNIONS</p>
+                <!-- [PLACEHOLDER: Logo row - 5-6 credit union logos in grayscale, evenly spaced, approximately 120px wide each] -->
+                <div class="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-50">
+                    <div class="w-28 h-12 bg-rise-slate/20 rounded"></div>
+                    <div class="w-28 h-12 bg-rise-slate/20 rounded"></div>
+                    <div class="w-28 h-12 bg-rise-slate/20 rounded"></div>
+                    <div class="w-28 h-12 bg-rise-slate/20 rounded"></div>
+                    <div class="w-28 h-12 bg-rise-slate/20 rounded"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 md:py-32 hero-pattern" style="background: linear-gradient(to bottom, #d4784a 0%, #e4905c 40%, #d4a03a 100%)">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-6">
+                Ready to Rise?
+            </h2>
+            <p class="text-xl md:text-2xl text-white/90 mb-10 max-w-2xl mx-auto">
+                Start your journey to financial wellness today. It's free for members.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#" class="bg-rise-blue hover:bg-rise-blue/90 text-white px-10 py-4 rounded-2xl font-bold text-lg transition-all shadow-lg hover:shadow-xl">
+                    Get Started Free
+                </a>
+                <a href="#" class="bg-white hover:bg-white/90 text-rise-blue px-10 py-4 rounded-2xl font-bold text-lg transition-all">
+                    Contact Sales
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-rise-blue text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-5 gap-12">
+                <!-- Brand -->
+                <div>
+                    <div class="flex items-center mb-6">
+                        <img src="logo.png" alt="Rise" class="h-7 w-auto brightness-0 invert">
+                    </div>
+                    <p class="text-white/70 leading-relaxed">
+                        Empowering financial wellness through education, coaching, and community.
+                    </p>
+                </div>
+
+                <!-- For Members -->
+                <div>
+                    <h4 class="font-bold text-lg mb-4">For Members</h4>
+                    <ul class="space-y-3 text-white/70">
+                        <li><a href="#" class="hover:text-white transition-colors">Get Started</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Financial Coaching</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Educational Resources</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Budget Calculator</a></li>
+                    </ul>
+                </div>
+
+                <!-- For Institutions -->
+                <div>
+                    <h4 class="font-bold text-lg mb-4">For Institutions</h4>
+                    <ul class="space-y-3 text-white/70">
+                        <li><a href="#" class="hover:text-white transition-colors">Schedule Demo</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Pricing</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Case Studies</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Partner Program</a></li>
+                    </ul>
+                </div>
+
+                <!-- For Community -->
+                <div>
+                    <h4 class="font-bold text-lg mb-4">For Community</h4>
+                    <ul class="space-y-3 text-white/70">
+                        <li><a href="#" class="hover:text-white transition-colors">Become a Partner</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Partner Portal</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Resource Publishing</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Lead Management</a></li>
+                    </ul>
+                </div>
+
+                <!-- Company -->
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Company</h4>
+                    <ul class="space-y-3 text-white/70">
+                        <li><a href="#" class="hover:text-white transition-colors">About Us</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Support</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-white/20 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-white/60 text-sm">
+                    © 2025 Rise Financial Wellness. All rights reserved.
+                </p>
+                <div class="flex gap-6 mt-4 md:mt-0">
+                    <!-- [PLACEHOLDER: Social media icons - Facebook, LinkedIn, Instagram, Twitter/X] -->
+                    <a href="#" class="text-white/60 hover:text-white transition-colors">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                    </a>
+                    <a href="#" class="text-white/60 hover:text-white transition-colors">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                    </a>
+                    <a href="#" class="text-white/60 hover:text-white transition-colors">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let currentAudience = 'members';
+
+        function setAudience(audience) {
+            currentAudience = audience;
+            
+            const audiences = ['members', 'institutions', 'community'];
+            
+            // Update all toggle buttons (desktop + mobile)
+            audiences.forEach(a => {
+                const btn = document.getElementById('toggle-' + a);
+                const mobileBtn = document.getElementById('mobile-toggle-' + a);
+                const hero = document.getElementById('hero-' + a);
+                const features = document.getElementById('features-' + a);
+                
+                if (a === audience) {
+                    if (btn) { btn.classList.remove('toggle-inactive'); btn.classList.add('toggle-active'); }
+                    if (mobileBtn) { mobileBtn.classList.remove('toggle-inactive'); mobileBtn.classList.add('toggle-active'); }
+                    if (hero) hero.classList.remove('hidden');
+                    if (features) features.classList.remove('hidden');
+                } else {
+                    if (btn) { btn.classList.remove('toggle-active'); btn.classList.add('toggle-inactive'); }
+                    if (mobileBtn) { mobileBtn.classList.remove('toggle-active'); mobileBtn.classList.add('toggle-inactive'); }
+                    if (hero) hero.classList.add('hidden');
+                    if (features) features.classList.add('hidden');
+                }
+            });
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+    </script>
+</body>
+</html>
