@@ -104,11 +104,16 @@
             border: 1px solid var(--border);
             border-radius: 8px;
             padding: 20px 18px;
+            min-height: 92px;
             cursor: pointer;
             transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
             position: relative;
             text-align: center;
             user-select: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
         .tile:hover {
             transform: translateY(-2px);
