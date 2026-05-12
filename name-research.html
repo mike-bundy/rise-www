@@ -5,77 +5,321 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rise Rebrand — Name Research</title>
     <style>
+        :root {
+            --teal: #007ea8;
+            --teal-dark: #005d7d;
+            --yellow: #ffe800;
+            --yellow-soft: #fff9db;
+            --yellow-text: #6e5a00;
+            --yellow-border: #cfb800;
+            --green-status: #00aa55;
+            --green-soft: #eafbf0;
+            --green-text: #145a32;
+            --red-status: #d23a3a;
+            --red-soft: #fde7e7;
+            --red-text: #8c1a1a;
+            --text: #1a1a1a;
+            --muted: #6b6b6b;
+            --border: #e5e5e5;
+            --bg: #ffffff;
+            --bg-soft: #f7f9fb;
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0a0f; color: #e0e0e8; line-height: 1.6; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        .header {
+            background: var(--bg);
+            border-bottom: 4px solid var(--teal);
+            padding: 56px 24px 36px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 2.4em;
+            font-weight: 800;
+            color: var(--teal);
+            letter-spacing: -0.5px;
+        }
+        .header p {
+            color: var(--muted);
+            font-size: 1.05em;
+            margin-top: 10px;
+        }
+        .header .date {
+            color: var(--muted);
+            font-size: 0.85em;
+            margin-top: 6px;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 32px 20px 80px;
+        }
+        .legend {
+            background: var(--bg-soft);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--teal);
+            padding: 16px 20px;
+            margin-bottom: 36px;
+            border-radius: 6px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            font-size: 0.95em;
+            align-items: center;
+        }
+        .legend-item { display: flex; align-items: center; gap: 8px; }
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .legend-dot.green { background: var(--green-status); }
+        .legend-dot.yellow { background: var(--yellow); border: 1px solid var(--yellow-border); }
+        .legend-hint {
+            color: var(--muted);
+            font-size: 0.9em;
+            margin-left: auto;
+        }
+        .section-title {
+            font-size: 1.45em;
+            font-weight: 800;
+            color: var(--teal);
+            margin: 40px 0 16px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--teal);
+        }
+        .tile-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .tile {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px 18px;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+            position: relative;
+            text-align: center;
+            user-select: none;
+        }
+        .tile:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 126, 168, 0.14);
+            border-color: var(--teal);
+        }
+        .tile:hover .tile-name {
+            color: var(--teal);
+        }
+        .tile.green {
+            border-left: 4px solid var(--green-status);
+        }
+        .tile.yellow {
+            border-left: 4px solid var(--yellow);
+        }
+        .tile-name {
+            font-weight: 700;
+            font-size: 1.05em;
+            color: var(--text);
+            transition: color 0.15s;
+            word-break: break-word;
+            display: block;
+        }
+        .tile-status-dot {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        .tile.green .tile-status-dot { background: var(--green-status); }
+        .tile.yellow .tile-status-dot { background: var(--yellow); border: 1px solid var(--yellow-border); }
 
-        .header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); padding: 60px 40px; text-align: center; border-bottom: 2px solid #2a2a4a; }
-        .header h1 { font-size: 2.8em; font-weight: 700; background: linear-gradient(90deg, #00d2ff, #7b2ff7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; }
-        .header p { color: #8888aa; font-size: 1.1em; }
-        .header .date { color: #6666aa; font-size: 0.9em; margin-top: 8px; }
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 60px 20px 20px;
+            overflow-y: auto;
+        }
+        .modal.open { display: flex; }
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 30, 50, 0.55);
+            z-index: -1;
+        }
+        .modal-card {
+            background: var(--bg);
+            border-radius: 12px;
+            max-width: 660px;
+            width: 100%;
+            padding: 36px 36px 32px;
+            position: relative;
+            border-top: 6px solid var(--teal);
+            box-shadow: 0 20px 50px rgba(0, 30, 50, 0.25);
+        }
+        .modal-close {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            background: none;
+            border: none;
+            font-size: 28px;
+            line-height: 1;
+            cursor: pointer;
+            color: var(--muted);
+            padding: 4px 12px;
+            border-radius: 6px;
+        }
+        .modal-close:hover { color: var(--teal); background: var(--bg-soft); }
 
-        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        .modal-body h2 {
+            font-size: 1.8em;
+            color: var(--teal);
+            margin-bottom: 4px;
+            font-weight: 800;
+        }
+        .modal-body .tagline {
+            color: var(--muted);
+            font-style: italic;
+            margin-bottom: 20px;
+            font-size: 0.95em;
+        }
+        .modal-body .domain-list {
+            list-style: none;
+            margin-bottom: 16px;
+            padding: 14px 18px;
+            background: var(--bg-soft);
+            border-radius: 6px;
+        }
+        .modal-body .domain-list li {
+            padding: 4px 0;
+            font-size: 0.95em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .modal-body .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+        .modal-body .dot.green { background: var(--green-status); }
+        .modal-body .dot.red { background: var(--red-status); }
+        .modal-body .dot.yellow { background: var(--yellow); border: 1px solid var(--yellow-border); }
+        .modal-body .avail { color: var(--green-text); font-weight: 600; }
+        .modal-body .taken { color: var(--red-text); font-weight: 600; }
+        .modal-body .unknown { color: var(--yellow-text); }
 
-        .legend { background: #12121f; border: 1px solid #2a2a4a; border-radius: 12px; padding: 24px; margin-bottom: 40px; }
-        .legend h3 { color: #7b8fff; margin-bottom: 12px; }
-        .legend-grid { display: flex; gap: 24px; flex-wrap: wrap; }
-        .legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.9em; }
-        .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
-        .dot.green { background: #00e676; }
-        .dot.yellow { background: #ffab00; }
-        .dot.red { background: #ff5252; }
-        .dot.blue { background: #448aff; }
+        .modal-body .meaning {
+            background: rgba(0, 126, 168, 0.06);
+            border-left: 3px solid var(--teal);
+            border-radius: 4px;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            font-size: 0.95em;
+        }
+        .modal-body .meaning strong { color: var(--teal); }
 
-        .section-title { font-size: 1.8em; font-weight: 700; color: #c0c0e0; margin: 50px 0 24px; padding-bottom: 12px; border-bottom: 1px solid #2a2a4a; }
-        .section-sub { color: #8888aa; margin-bottom: 24px; font-size: 0.95em; }
+        .modal-body .conflicts {
+            background: var(--yellow-soft);
+            border-left: 3px solid var(--yellow);
+            border-radius: 4px;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            font-size: 0.9em;
+            color: var(--yellow-text);
+        }
+        .modal-body .conflicts.none {
+            background: var(--green-soft);
+            border-left-color: var(--green-status);
+            color: var(--green-text);
+        }
+        .modal-body .conflicts strong { color: var(--text); }
+        .modal-body .conflicts a { color: var(--teal); text-decoration: underline; }
 
-        /* Name Cards */
-        .name-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 20px; margin-bottom: 40px; }
-        .name-card { background: #12121f; border: 1px solid #2a2a4a; border-radius: 12px; padding: 24px; transition: border-color 0.2s, transform 0.2s; }
-        .name-card:hover { border-color: #4a4a8a; transform: translateY(-2px); }
-        .name-card.top-pick { border-color: #00e676; box-shadow: 0 0 20px rgba(0, 230, 118, 0.1); }
-        .name-card.caution { border-color: #ffab00; }
-        .name-card.conflict { border-color: #ff5252; }
+        .modal-body .verdict {
+            font-weight: 700;
+            font-size: 0.95em;
+            padding: 10px 16px;
+            border-radius: 6px;
+            display: inline-block;
+            margin-top: 8px;
+        }
+        .modal-body .verdict.go { background: var(--green-soft); color: var(--green-text); }
+        .modal-body .verdict.maybe { background: var(--yellow-soft); color: var(--yellow-text); }
+        .modal-body .verdict.no { background: var(--red-soft); color: var(--red-text); }
 
-        .name-card h2 { font-size: 1.6em; margin-bottom: 4px; }
-        .name-card .tagline { color: #7b8fff; font-size: 0.9em; font-style: italic; margin-bottom: 16px; }
+        .modal-body .badge {
+            display: inline-block;
+            font-size: 0.62em;
+            padding: 4px 10px;
+            border-radius: 12px;
+            margin-left: 8px;
+            vertical-align: middle;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .modal-body .badge.top { background: var(--green-status); color: white; }
+        .modal-body .badge.warn { background: var(--yellow); color: var(--yellow-text); }
+        .modal-body .badge.dead { background: var(--red-status); color: white; }
+        .modal-body .badge.new { background: var(--teal); color: white; }
 
-        .domain-list { list-style: none; margin-bottom: 16px; }
-        .domain-list li { padding: 4px 0; font-size: 0.9em; display: flex; align-items: center; gap: 8px; }
-        .domain-list .avail { color: #00e676; }
-        .domain-list .taken { color: #ff5252; }
-        .domain-list .unknown { color: #ffab00; }
+        .modal-body code {
+            background: var(--bg-soft);
+            padding: 1px 6px;
+            border-radius: 3px;
+            font-size: 0.9em;
+            font-family: 'SF Mono', Menlo, Consolas, monospace;
+        }
 
-        .meaning { background: #1a1a2e; border-radius: 8px; padding: 12px; margin-bottom: 12px; font-size: 0.9em; color: #b0b0cc; }
-        .meaning strong { color: #c0c0e0; }
+        /* Recommendations summary */
+        .summary {
+            background: var(--bg-soft);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--teal);
+            border-radius: 8px;
+            padding: 28px 32px;
+            margin-top: 56px;
+        }
+        .summary h2 {
+            font-size: 1.45em;
+            color: var(--teal);
+            margin-bottom: 14px;
+            font-weight: 800;
+        }
+        .summary ol { padding-left: 22px; columns: 2; column-gap: 32px; margin-bottom: 8px; }
+        .summary ol li { padding: 4px 0; font-size: 1em; break-inside: avoid; }
+        .summary ol li strong { color: var(--teal); }
+        .summary .note {
+            margin-top: 18px;
+            color: var(--muted);
+            font-size: 0.9em;
+        }
+        .summary .note strong { color: var(--text); }
 
-        .conflicts { background: #1f1520; border-radius: 8px; padding: 12px; margin-bottom: 12px; font-size: 0.85em; color: #e08080; }
-        .conflicts.none { background: #151f1a; color: #80e0a0; }
-
-        .verdict { font-weight: 600; font-size: 0.95em; padding: 8px 12px; border-radius: 6px; display: inline-block; }
-        .verdict.go { background: #1a3a2a; color: #00e676; }
-        .verdict.maybe { background: #3a3a1a; color: #ffab00; }
-        .verdict.no { background: #3a1a1a; color: #ff5252; }
-
-        /* Summary */
-        .summary { background: linear-gradient(135deg, #1a1a2e, #16213e); border: 1px solid #3a3a6a; border-radius: 16px; padding: 32px; margin-top: 50px; }
-        .summary h2 { font-size: 1.8em; color: #7bffb7; margin-bottom: 16px; }
-        .summary ol { padding-left: 24px; }
-        .summary li { padding: 8px 0; font-size: 1.05em; }
-        .summary li strong { color: #00d2ff; }
-        .summary .note { margin-top: 16px; color: #8888aa; font-size: 0.9em; font-style: italic; }
-
-        .badge { display: inline-block; font-size: 0.7em; padding: 2px 8px; border-radius: 10px; margin-left: 8px; vertical-align: middle; font-weight: 600; }
-        .badge.top { background: #1a3a2a; color: #00e676; }
-        .badge.warn { background: #3a3a1a; color: #ffab00; }
-        .badge.dead { background: #3a1a1a; color: #ff5252; }
-        .badge.new { background: #1a2a3a; color: #448aff; }
-
-        .correction { background: #2a1a1a; border: 1px solid #aa4040; border-radius: 8px; padding: 16px; margin: 16px 0; font-size: 0.9em; color: #f0c0c0; }
-        .correction strong { color: #ff8080; }
-
-        @media (max-width: 768px) {
-            .header h1 { font-size: 1.8em; }
-            .name-grid { grid-template-columns: 1fr; }
+        @media (max-width: 640px) {
+            .header h1 { font-size: 1.7em; }
+            .section-title { font-size: 1.2em; }
+            .tile-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+            .modal-card { padding: 28px 20px 24px; }
+            .summary { padding: 22px 20px; }
+            .summary ol { columns: 1; }
         }
     </style>
 </head>
@@ -83,29 +327,178 @@
 
 <div class="header">
     <h1>Rise Rebrand — Name Research</h1>
-    <p>7 rounds combined — 80 candidates evaluated against domain availability and brand/trademark conflicts, sorted green-to-red</p>
-    <div class="date">Updated May 11, 2026</div>
+    <p>31 candidates — click any name to see domain availability, conflicts, and verdict</p>
+    <div class="date">Updated May 12, 2026</div>
 </div>
 
 <div class="container">
 
     <div class="legend">
-        <h3>Legend</h3>
-        <div class="legend-grid">
-            <div class="legend-item"><span class="dot green"></span> Top Pick — clear path forward</div>
-            <div class="legend-item"><span class="dot yellow"></span> Caution — some conflicts or limited domains</div>
-            <div class="legend-item"><span class="dot red"></span> Major Conflict — established competitor in fintech</div>
-            <div class="legend-item"><span class="dot blue"></span> New in this round</div>
-        </div>
+        <div class="legend-item"><span class="legend-dot green"></span> Green — clear path forward</div>
+        <div class="legend-item"><span class="legend-dot yellow"></span> Yellow — workable with caveats</div>
+        <span class="legend-hint">Click any tile for details</span>
     </div>
 
     <h2 class="section-title">🟢 Green — top picks (9)</h2>
-    <p class="section-sub">All 3 standard TLDs free, no exact-match competitor, no Class 36 trademark collision. The recommended shortlist.</p>
+    <div class="tile-grid">
+        <div class="tile green" data-card-id="green-0">
+            <span class="tile-status-dot"></span>
+            <span class="tile-name">RainCents</span>
+        </div>
+        <div class="tile green" data-card-id="green-1">
+            <span class="tile-status-dot"></span>
+            <span class="tile-name">SproutBux</span>
+        </div>
+        <div class="tile green" data-card-id="green-2">
+            <span class="tile-status-dot"></span>
+            <span class="tile-name">SproutKash</span>
+        </div>
+        <div class="tile green" data-card-id="green-3">
+            <span class="tile-status-dot"></span>
+            <span class="tile-name">Centscope</span>
+        </div>
+        <div class="tile green" data-card-id="green-4">
+            <span class="tile-status-dot"></span>
+            <span class="tile-name">RainBux</span>
+        </div>
+        <div class="tile green" data-card-id="green-5">
+            <span class="tile-status-dot"></span>
+            <span class="tile-name">RainKash</span>
+        </div>
+        <div class="tile green" data-card-id="green-6">
+            <span class="tile-status-dot"></span>
+            <span class="tile-name">CedarCents</span>
+        </div>
+        <div class="tile green" data-card-id="green-7">
+            <span class="tile-status-dot"></span>
+            <span class="tile-name">CoveCents</span>
+        </div>
+        <div class="tile green" data-card-id="green-8">
+            <span class="tile-status-dot"></span>
+            <span class="tile-name">Centsrise</span>
+        </div>
+    </div>
 
-    <div class="name-grid">
+    <h2 class="section-title">🟡 Yellow — workable with caveats (22)</h2>
+    <div class="tile-grid">
+        <div class="tile yellow" data-card-id="yellow-0">
+            <span class="tile-status-dot"></span>
+            <span class="tile-name">FinCoachIQ</span>
+        </div>
+        <div class="tile yellow" data-card-id="yellow-1">
+            <span class="tile-status-dot"></span>
+            <span class="tile-name">Budgetarium</span>
+        </div>
+        <div class="tile yellow" data-card-id="yellow-2">
+            <span class="tile-status-dot"></span>
+            <span class="tile-name">BudgetNavigator</span>
+        </div>
+        <div class="tile yellow" data-card-id="yellow-3">
+            <span class="tile-status-dot"></span>
+            <span class="tile-name">KashIQ</span>
+        </div>
+        <div class="tile yellow" data-card-id="yellow-4">
+            <span class="tile-status-dot"></span>
+            <span class="tile-name">FinPathfinder</span>
+        </div>
+        <div class="tile yellow" data-card-id="yellow-5">
+            <span class="tile-status-dot"></span>
+            <span class="tile-name">KashCompass</span>
+        </div>
+        <div class="tile yellow" data-card-id="yellow-6">
+            <span class="tile-status-dot"></span>
+            <span class="tile-name">ProsperQuest</span>
+        </div>
+        <div class="tile yellow" data-card-id="yellow-7">
+            <span class="tile-status-dot"></span>
+            <span class="tile-name">$ucceed</span>
+        </div>
+        <div class="tile yellow" data-card-id="yellow-8">
+            <span class="tile-status-dot"></span>
+            <span class="tile-name">Financial Helping Hands</span>
+        </div>
+        <div class="tile yellow" data-card-id="yellow-9">
+            <span class="tile-status-dot"></span>
+            <span class="tile-name">TrackCents</span>
+        </div>
+        <div class="tile yellow" data-card-id="yellow-10">
+            <span class="tile-status-dot"></span>
+            <span class="tile-name">FinCoachConnect</span>
+        </div>
+        <div class="tile yellow" data-card-id="yellow-11">
+            <span class="tile-status-dot"></span>
+            <span class="tile-name">TrackCash</span>
+        </div>
+        <div class="tile yellow" data-card-id="yellow-12">
+            <span class="tile-status-dot"></span>
+            <span class="tile-name">CentBeacon</span>
+        </div>
+        <div class="tile yellow" data-card-id="yellow-13">
+            <span class="tile-status-dot"></span>
+            <span class="tile-name">HarborBux</span>
+        </div>
+        <div class="tile yellow" data-card-id="yellow-14">
+            <span class="tile-status-dot"></span>
+            <span class="tile-name">PineKash</span>
+        </div>
+        <div class="tile yellow" data-card-id="yellow-15">
+            <span class="tile-status-dot"></span>
+            <span class="tile-name">NorthCents</span>
+        </div>
+        <div class="tile yellow" data-card-id="yellow-16">
+            <span class="tile-status-dot"></span>
+            <span class="tile-name">KashHarbor</span>
+        </div>
+        <div class="tile yellow" data-card-id="yellow-17">
+            <span class="tile-status-dot"></span>
+            <span class="tile-name">SproutPenny</span>
+        </div>
+        <div class="tile yellow" data-card-id="yellow-18">
+            <span class="tile-status-dot"></span>
+            <span class="tile-name">SproutVault</span>
+        </div>
+        <div class="tile yellow" data-card-id="yellow-19">
+            <span class="tile-status-dot"></span>
+            <span class="tile-name">RainVault</span>
+        </div>
+        <div class="tile yellow" data-card-id="yellow-20">
+            <span class="tile-status-dot"></span>
+            <span class="tile-name">CentSpark</span>
+        </div>
+        <div class="tile yellow" data-card-id="yellow-21">
+            <span class="tile-status-dot"></span>
+            <span class="tile-name">KashLab</span>
+        </div>
+    </div>
 
-        <div class="name-card top-pick">
-            <h2>RainCents <span class="badge top">TOP PICK</span></h2>
+    <div class="summary">
+        <h2>🏆 Recommended Shortlist</h2>
+        <p style="margin-bottom: 14px;">9 green candidates across two complementary families — money-stem coinages and PNW-nature roots.</p>
+        <ol>
+            <li><strong>RainCents</strong></li>
+            <li><strong>SproutBux</strong></li>
+            <li><strong>SproutKash</strong></li>
+            <li><strong>Centscope</strong></li>
+            <li><strong>RainBux</strong></li>
+            <li><strong>RainKash</strong></li>
+            <li><strong>CedarCents</strong></li>
+            <li><strong>CoveCents</strong></li>
+            <li><strong>Centsrise</strong></li>
+        </ol>
+        <div class="note">
+            <strong>Pattern observation across 7 rounds:</strong> invented compounds on a money-stem suffix (–Cents, –Bux, –Kash) or distinctive natural roots paired with money stems (Cedar–, Cove–, Rain–) keep finding clean ground. Single dictionary words, given names, surnames, and place names all hit walls — a 1990s/2000s .com holder plus an active credit union running a financial-wellness program. Avoid -Coin (crypto), -Stash (neobank), -Vault (savings TM overlap), and any compound that stacks two crowded financial roots.
+        </div>
+        <div class="note">
+            Domain availability verified via direct WHOIS against the authoritative registries (Verisign for .com/.net, Public Interest Registry for .org). Trademark and competitor signals synthesized from USPTO search, Crunchbase, App Store, Google Play, and general web results. Confirm with your registrar and a USPTO examiner at purchase/filing time — fresh registrations happen daily.
+        </div>
+    </div>
+
+</div>
+
+<!-- Card details (hidden, populates modal on click) -->
+<div style="display: none;" id="card-store">
+<div id="green-0">
+<h2>RainCents <span class="badge top">TOP PICK</span></h2>
             <div class="tagline">"Every drop adds up"</div>
             <ul class="domain-list">
                 <li><span class="dot green"></span> <span class="avail">raincents.com — AVAILABLE ✓</span></li>
@@ -119,10 +512,9 @@
                 <strong>Conflicts:</strong> None found. No trademarks, no live fintechs, no brand collisions. "Rain" exists as a separate fintech (earned-wage access) but "RainCents" is distinct. Zero search results for the exact combined term.
             </div>
             <span class="verdict go">✅ Strong — all 3 domains free, unique, great story</span>
-        </div>
-
-        <div class="name-card top-pick">
-            <h2>SproutBux <span class="badge top">TOP PICK</span></h2>
+</div>
+<div id="green-1">
+<h2>SproutBux <span class="badge top">TOP PICK</span></h2>
             <div class="tagline">"Watch your bux sprout"</div>
             <ul class="domain-list">
                 <li><span class="dot green"></span> <span class="avail">sproutbux.com — AVAILABLE ✓</span></li>
@@ -136,10 +528,9 @@
                 <strong>Conflicts:</strong> None found. Zero search results for the exact combined term. No app store hits. No trademarks. Clean slate.
             </div>
             <span class="verdict go">✅ Strong — all 3 domains free, fun brand, no conflicts</span>
-        </div>
-
-        <div class="name-card top-pick">
-            <h2>SproutKash <span class="badge top">TOP PICK</span></h2>
+</div>
+<div id="green-2">
+<h2>SproutKash <span class="badge top">TOP PICK</span></h2>
             <div class="tagline">"Grow your kash"</div>
             <ul class="domain-list">
                 <li><span class="dot green"></span> <span class="avail">sproutkash.com — AVAILABLE ✓</span></li>
@@ -153,10 +544,9 @@
                 <strong>Conflicts:</strong> None found. Zero search results for the combined term. Clean slate.
             </div>
             <span class="verdict go">✅ Strong — all 3 domains free, no conflicts</span>
-        </div>
-
-        <div class="name-card top-pick">
-            <h2>Centscope <span class="badge new">NEW</span> <span class="badge top">TOP PICK</span></h2>
+</div>
+<div id="green-3">
+<h2>Centscope <span class="badge new">NEW</span> <span class="badge top">TOP PICK</span></h2>
             <div class="tagline">"Focus on every cent"</div>
             <ul class="domain-list">
                 <li><span class="dot green"></span> <span class="avail">centscope.com — AVAILABLE ✓</span></li>
@@ -170,10 +560,9 @@
                 <strong>Conflicts:</strong> None found. No USPTO hit for the exact term, no fintech/budgeting competitor surfaced. Adjacent names exist in the budgeting space (Centify, Centsible) but "Centscope" is distinct. Clean slate.
             </div>
             <span class="verdict go">✅ Strongest Round 4 name — all 3 domains free, no conflicts</span>
-        </div>
-
-        <div class="name-card top-pick">
-            <h2>RainBux <span class="badge new">NEW</span> <span class="badge top">TOP PICK</span></h2>
+</div>
+<div id="green-4">
+<h2>RainBux <span class="badge new">NEW</span> <span class="badge top">TOP PICK</span></h2>
             <div class="tagline">"Every drop, in bux"</div>
             <ul class="domain-list">
                 <li><span class="dot green"></span> <span class="avail">rainbux.com — AVAILABLE ✓</span></li>
@@ -187,10 +576,9 @@
                 <strong>Conflicts:</strong> None found. Zero USPTO hits, no fintech apps, no credit unions, no crypto projects on the exact compound. Closest tangential references are Rain-X (auto care) and Rains (Danish rainwear) — unrelated industries. The standalone "Rain" fintech (LA-based earned-wage-access, $75M Series B in 2025) exists but the "Bux" suffix carves out clear lexical space, same way RainCents does.
             </div>
             <span class="verdict go">✅ Strong — all 3 domains free, zero conflicts, mirrors RainCents/SproutBux precedent</span>
-        </div>
-
-        <div class="name-card top-pick">
-            <h2>RainKash <span class="badge new">NEW</span> <span class="badge top">TOP PICK</span></h2>
+</div>
+<div id="green-5">
+<h2>RainKash <span class="badge new">NEW</span> <span class="badge top">TOP PICK</span></h2>
             <div class="tagline">"Pour the kash in"</div>
             <ul class="domain-list">
                 <li><span class="dot green"></span> <span class="avail">rainkash.com — AVAILABLE ✓</span></li>
@@ -204,10 +592,9 @@
                 <strong>Conflicts:</strong> None found. Zero USPTO, no fintech, no banking, no crypto on the compound. Tangential: "Rainkiss" is a Dutch sustainable rainwear brand — different industry, different spelling. Same parent-"Rain" caveat as RainBux, mitigated identically by the suffix.
             </div>
             <span class="verdict go">✅ Strong — all 3 domains free, zero conflicts, K-spelling matches SproutKash family</span>
-        </div>
-
-        <div class="name-card top-pick">
-            <h2>CedarCents <span class="badge new">NEW</span> <span class="badge top">TOP PICK</span></h2>
+</div>
+<div id="green-6">
+<h2>CedarCents <span class="badge new">NEW</span> <span class="badge top">TOP PICK</span></h2>
             <div class="tagline">"Roots and growth"</div>
             <ul class="domain-list">
                 <li><span class="dot green"></span> <span class="avail">cedarcents.com — AVAILABLE ✓</span></li>
@@ -221,10 +608,9 @@
                 <strong>Conflicts:</strong> None found on the exact compound. No app, startup, LLC, or USPTO record for "CedarCents" or "Cedar Cents." The "Cedar" root has some CU/bank usage (Cedar Rapids Bank &amp; Trust IA, Cedar Falls, Cedar Point FCU MD) but no exact-mark collision and no national-level "Cedar" fintech brand. Clean slate.
             </div>
             <span class="verdict go">✅ Strong — all 3 domains free, zero conflicts, new "PNW nature" lane</span>
-        </div>
-
-        <div class="name-card top-pick">
-            <h2>CoveCents <span class="badge new">NEW</span> <span class="badge top">TOP PICK</span></h2>
+</div>
+<div id="green-7">
+<h2>CoveCents <span class="badge new">NEW</span> <span class="badge top">TOP PICK</span></h2>
             <div class="tagline">"Sheltered savings"</div>
             <ul class="domain-list">
                 <li><span class="dot green"></span> <span class="avail">covecents.com — AVAILABLE ✓</span></li>
@@ -238,10 +624,9 @@
                 <strong>Conflicts:</strong> None found on the compound. Notably: <strong>Cove Federal Credit Union</strong> (Edgewood KY, covefcu.com) — the only meaningful "Cove" CU brand — is <em>sunsetting</em>: as of April 1, 2026 it merged into UK Credit Union and is operating under that name going forward. The "Cove" CU lane is actively closing, not opening. No app, no USPTO collision, no other fintech on "Cove" or "CoveCents."
             </div>
             <span class="verdict go">✅ Strong — all 3 domains free, Cove FCU sunsetting via merger, lane is opening up</span>
-        </div>
-
-        <div class="name-card top-pick">
-            <h2>Centsrise <span class="badge new">NEW</span> <span class="badge top">TOP PICK</span></h2>
+</div>
+<div id="green-8">
+<h2>Centsrise <span class="badge new">NEW</span> <span class="badge top">TOP PICK</span></h2>
             <div class="tagline">"Cents rise" — savings, literally going up</div>
             <ul class="domain-list">
                 <li><span class="dot green"></span> <span class="avail">centsrise.com — AVAILABLE ✓</span></li>
@@ -258,17 +643,9 @@
                 <strong>⚠️ Strategic note (not a conflict):</strong> The embedded "rise" is either an asset (smooth rebrand transition; existing equity carries forward) or a liability (if the rebrand goal is full separation from the current name). Worth a stakeholder call before locking in. The trademark and domain picture is otherwise spotless.
             </div>
             <span class="verdict go">✅ Strong — all 3 domains free, no conflicts; flag the embedded "rise" for stakeholder decision</span>
-        </div>
-
-    </div>
-
-    <h2 class="section-title">🟡 Yellow — workable with caveats (21)</h2>
-    <p class="section-sub">No direct fintech competitor on the exact mark, but one or more meaningful obstacles: contested parent root, .com on premium aftermarket, descriptive trademark weakness, or near-adjacent peer brand. Workable as fallbacks, not as top picks.</p>
-
-    <div class="name-grid">
-
-        <div class="name-card caution">
-            <h2>FinCoachIQ <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
+</div>
+<div id="yellow-0">
+<h2>FinCoachIQ <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
             <div class="tagline">"Smart financial coaching"</div>
             <ul class="domain-list">
                 <li><span class="dot green"></span> <span class="avail">fincoachiq.com — AVAILABLE ✓</span></li>
@@ -282,10 +659,9 @@
                 <strong>⚠️ Parent-brand crowding:</strong> No one owns "FinCoachIQ" specifically, but the bare "FinCoach" space is heavily populated — <a href="https://fincoach.app" style="color:#7b8fff">fincoach.app</a> (AI coach), fincoach.biz, fin-coach.com, thefincoach.com, fincoach.space, fincoach.com.au, plus Apple App Store ("More Money Mindset: FinCoach") and Google Play listings. The IQ suffix keeps the domain and likely the USPTO class clear, but customer confusion with "FinCoach" products is a real risk.
             </div>
             <span class="verdict maybe">⚡ All 3 domains free, TM-clean as "FinCoachIQ" — but inherits brand noise from "FinCoach"</span>
-        </div>
-
-        <div class="name-card caution">
-            <h2>Budgetarium <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
+</div>
+<div id="yellow-1">
+<h2>Budgetarium <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
             <div class="tagline">"Your budget sanctuary"</div>
             <ul class="domain-list">
                 <li><span class="dot red"></span> <span class="taken">budgetarium.com — TAKEN (Apr 17, 2025 via GMO/Onamae, Japan)</span></li>
@@ -299,10 +675,9 @@
                 <strong>⚠️ Domain only:</strong> No fintech competitor found in search or USPTO results. The <code>.com</code> was registered in April 2025 through a Japanese domain reseller (GMO/Onamae) — characteristic of a speculative/domainer registration, not an active business. Domain didn't load during verification. Usable on .org/.net; .com would need to be negotiated or skipped.
             </div>
             <span class="verdict maybe">⚡ Trademark clean; .com in speculator hands</span>
-        </div>
-
-        <div class="name-card caution">
-            <h2>BudgetNavigator <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
+</div>
+<div id="yellow-2">
+<h2>BudgetNavigator <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
             <div class="tagline">"Navigate your money"</div>
             <ul class="domain-list">
                 <li><span class="dot red"></span> <span class="taken">budgetnavigator.com — TAKEN (2017)</span></li>
@@ -316,10 +691,9 @@
                 <strong>⚠️ Domain only:</strong> No fintech competitor surfaced in search. The <code>.com</code> has been held since 2017 but no notable brand associated. Descriptive name may be harder to trademark in a tight class.
             </div>
             <span class="verdict maybe">⚡ Workable on .org/.net; weak distinctiveness</span>
-        </div>
-
-        <div class="name-card caution">
-            <h2>KashIQ <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
+</div>
+<div id="yellow-3">
+<h2>KashIQ <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
             <div class="tagline">"Smart money"</div>
             <ul class="domain-list">
                 <li><span class="dot red"></span> <span class="taken">kashiq.com — TAKEN (2020)</span></li>
@@ -333,10 +707,9 @@
                 <strong>⚠️ Phonetic collision:</strong> <a href="https://cash-iq.com" style="color:#7b8fff">Cash-iq.com</a> is an active "CashIQ" AI-powered bookkeeping MVP — pronounced identically to KashIQ. Different spelling, but same aural brand. Could complicate USPTO examination in the same class.
             </div>
             <span class="verdict maybe">⚡ Domains partly free; phonetic collision with CashIQ (AI bookkeeping)</span>
-        </div>
-
-        <div class="name-card caution">
-            <h2>FinPathfinder <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
+</div>
+<div id="yellow-4">
+<h2>FinPathfinder <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
             <div class="tagline">"Find your financial path"</div>
             <ul class="domain-list">
                 <li><span class="dot red"></span> <span class="taken">finpathfinder.com — TAKEN (Oct 2024; returns 404)</span></li>
@@ -350,10 +723,9 @@
                 <strong>⚠️ Domain only:</strong> Zero search results for exact name. <code>.com</code> registered Oct 2024 but currently returns 404 — registered, not hosting. No fintech competitor found.
             </div>
             <span class="verdict maybe">⚡ Trademark clean; .com parked but empty</span>
-        </div>
-
-        <div class="name-card caution">
-            <h2>KashCompass <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
+</div>
+<div id="yellow-5">
+<h2>KashCompass <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
             <div class="tagline">"Find your financial north"</div>
             <ul class="domain-list">
                 <li><span class="dot red"></span> <span class="taken">kashcompass.com — TAKEN (Feb 2023)</span></li>
@@ -367,10 +739,9 @@
                 <strong>⚠️ Phonetic collision with CashCompass:</strong> The identically-sounding <strong>CashCompass</strong> name is <em>saturated</em> in budgeting fintech — see the CashCompass card below for the full list. KashCompass is a spelling workaround, but customer confusion is near-guaranteed, and USPTO may treat the marks as confusingly similar in the same class.
             </div>
             <span class="verdict maybe">⚡ Risky — phonetically identical to a crowded name</span>
-        </div>
-
-        <div class="name-card caution">
-            <h2>ProsperQuest <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
+</div>
+<div id="yellow-6">
+<h2>ProsperQuest <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
             <div class="tagline">"The quest to prosper"</div>
             <ul class="domain-list">
                 <li><span class="dot red"></span> <span class="taken">prosperquest.com — TAKEN (Jan 14, 2026 — brand new)</span></li>
@@ -384,10 +755,9 @@
                 <strong>⚠️ Prosper space crowded:</strong> "Prosper" is a minefield — Prosper Marketplace ($23B+ loans, SF), UK wealth manager Prosper (£4M funding), Prosperum Fintech Holdings, and ProsperIQ (see below). <code>prosperquest.com</code> was registered just 3 months ago (Jan 2026), which suggests someone else has the same idea right now and is moving on it. High risk of near-simultaneous collision.
             </div>
             <span class="verdict maybe">⚡ Crowded parent space + .com just grabbed in Jan 2026</span>
-        </div>
-
-        <div class="name-card caution">
-            <h2>$ucceed <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
+</div>
+<div id="yellow-7">
+<h2>$ucceed <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
             <div class="tagline">"Win with your money"</div>
             <ul class="domain-list">
                 <li><span class="dot red"></span> <span class="taken">succeed.com — TAKEN (2000); listed for sale via Efty marketplace</span></li>
@@ -401,10 +771,9 @@
                 <strong>⚠️ Stylization breaks the domain + weakens the TM:</strong> The literal <code>$</code> isn't a valid character in a domain name, and USPTO won't register it as a standard-character mark — only as a stylized/design mark with weaker protection. Customers hearing the name will type "succeed.com," which is a for-sale page (mid-5-to-low-6-figure expected floor). <code>succeed.net</code> is a 30-year-old regional ISP brand actively serving NorCal. "Succeed" is a generic English verb with low inherent distinctiveness — USPTO will demand acquired-distinctiveness evidence for anything in financial services. No single dominant "Succeed" fintech surfaced, but Fidelity and BofA have both run "Succeed" campaign marks historically.
             </div>
             <span class="verdict maybe">⚡ No direct fintech competitor — but stylization can't live in a URL, and all 3 TLDs are compromised</span>
-        </div>
-
-        <div class="name-card caution">
-            <h2>Financial Helping Hands <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
+</div>
+<div id="yellow-8">
+<h2>Financial Helping Hands <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
             <div class="tagline">"A hand up with your money"</div>
             <ul class="domain-list">
                 <li><span class="dot green"></span> <span class="avail">financialhelpinghands.com — AVAILABLE ✓</span></li>
@@ -418,10 +787,9 @@
                 <strong>⚠️ Descriptive + contested parent phrase:</strong> All three TLDs are open — genuinely rare for a marketing-sized name. But the underlying "Helping Hands" theme is heavily used in our exact space: <strong>Helping Hands Financial LLC</strong> (Miami credit-repair brand, 700clubguaranteed.com), <strong>Peoples Advantage FCU "Helping Hands"</strong> financial-literacy program, <strong>USF Credit Union "Helping Hand"</strong> member-relief loan, <strong>Family Savings CU / Emblem CU "Helping Hands Foundation Fund"</strong>, plus pending USPTO app 98888285 "HELPING HANDS SUPPORT FOR A BETTER TOMORROW" (Dec 2024) covering a website matching users to financial-assistance programs — almost exactly Rise-adjacent. USPTO Class 36 would treat "Financial Helping Hands" as merely descriptive of an assistance-oriented financial service, demanding acquired-distinctiveness evidence. 24-character, 3-word names are also awkward on logos and in spoken brand mentions.
             </div>
             <span class="verdict maybe">⚡ All 3 domains free — but descriptive, weak TM, parent phrase contested by credit unions</span>
-        </div>
-
-        <div class="name-card caution">
-            <h2>TrackCents <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
+</div>
+<div id="yellow-9">
+<h2>TrackCents <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
             <div class="tagline">"Every cent, tracked"</div>
             <ul class="domain-list">
                 <li><span class="dot red"></span> <span class="taken">trackcents.com — TAKEN (May 2013, GoDaddy privacy; no live site)</span></li>
@@ -435,10 +803,9 @@
                 <strong>Conflicts:</strong> None found on the exact mark. No App Store, Google Play, or USPTO hit for "TrackCents" / "Track Cents." The broader "*Cents" pattern is busy (Sense of Cents, Centsible, Navy Federal's MakingCents, Vectra Bank's Two Cents), but none collides directly. <code>trackcents.com</code> is held by a 2013-vintage privacy-shielded registrant with no live site — characteristic of a long-term squatter, plausibly acquirable but unverified.
             </div>
             <span class="verdict maybe">⚡ Trademark clean; .com held by silent squatter since 2013; .org/.net free</span>
-        </div>
-
-        <div class="name-card caution">
-            <h2>FinCoachConnect <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
+</div>
+<div id="yellow-10">
+<h2>FinCoachConnect <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
             <div class="tagline">"Coaching that connects"</div>
             <ul class="domain-list">
                 <li><span class="dot green"></span> <span class="avail">fincoachconnect.com — AVAILABLE ✓</span></li>
@@ -452,10 +819,9 @@
                 <strong>⚠️ Same problem Round 4's FinCoachIQ had — parent space saturated:</strong> The bare "FinCoach" lane is the most contested micro-niche in financial coaching: <a href="https://fincoach.app" style="color:#7b8fff">fincoach.app</a> (AI personal-finance coach), <a href="https://fin-coach.app" style="color:#7b8fff">fin-coach.app</a> (FinCoach AI), fin-coach.com, fincoach.biz, fincoach.me, thefincoach.com, ifmfincoach.com, fincoach.com.au; App Store "More Money Mindset: FinCoach" plus Google Play "FinCoach" and "Financial Coach" apps — at least 8+ simultaneously active brands. The "Connect" suffix carves out a separate domain string and likely a distinct USPTO mark, but customer confusion with the "FinCoach" cluster is near-guaranteed.
             </div>
             <span class="verdict maybe">⚡ All 3 domains free, TM-clean as "FinCoachConnect" — but inherits brand noise from "FinCoach"</span>
-        </div>
-
-        <div class="name-card caution">
-            <h2>TrackCash <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
+</div>
+<div id="yellow-11">
+<h2>TrackCash <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
             <div class="tagline">"Where the cash goes"</div>
             <ul class="domain-list">
                 <li><span class="dot red"></span> <span class="taken">trackcash.com — TAKEN (Mar 2008, parked on Afternic — for sale)</span></li>
@@ -469,10 +835,9 @@
                 <strong>⚠️ App Store name collision + domain mess:</strong> No financial-services fintech "TrackCash" surfaced. But an iOS app named <strong>TrackCash</strong> (apps.apple.com/us/app/trackcash/id1630508421, IDEO Software) is shipping under that exact name — for <em>airline baggage tracking</em>. Different category, but App Store submission would likely flag the name collision and require disambiguation. <code>trackcash.com</code> sits on Afternic aftermarket (low-to-mid four figures likely). <code>trackcash.org</code> was registered just six months ago (Nov 2025) under a NameCheap privacy shield — could be a new project or a parker; needs revisit before commitment.
             </div>
             <span class="verdict maybe">⚡ No fintech competitor — but .com on aftermarket, baggage-tracking app collision, .org recently grabbed</span>
-        </div>
-
-        <div class="name-card caution">
-            <h2>CentBeacon <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
+</div>
+<div id="yellow-12">
+<h2>CentBeacon <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
             <div class="tagline">"A light on every cent"</div>
             <ul class="domain-list">
                 <li><span class="dot green"></span> <span class="avail">centbeacon.com — AVAILABLE ✓</span></li>
@@ -486,10 +851,9 @@
                 <strong>⚠️ Beacon parent root is dangerously crowded in CUs:</strong> Per Round 6 — 4+ "Beacon" credit unions (Beacon CU Indiana, Beacon Federal CU Houston, Beacon Financial CU Tennessee, Beacon Community CU Louisville), plus <strong>Beacon Bank</strong> (a 2026 rebrand of 4 merged institutions, top-100 US bank), <strong>Beacon Funding</strong> (equipment financing), and <strong>Beacon Platform</strong> (capital-markets SaaS, $20M Series B 2020). The "Beacon" root is among the most contested in financial services. A peer CU could plausibly oppose on likelihood-of-confusion grounds. Workable with TM counsel sign-off; the compound itself is genuinely empty.
             </div>
             <span class="verdict maybe">⚡ All 3 domains free + clean compound — but Beacon parent root very crowded in CU space</span>
-        </div>
-
-        <div class="name-card caution">
-            <h2>HarborBux <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
+</div>
+<div id="yellow-13">
+<h2>HarborBux <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
             <div class="tagline">"Money, anchored"</div>
             <ul class="domain-list">
                 <li><span class="dot green"></span> <span class="avail">harborbux.com — AVAILABLE ✓</span></li>
@@ -503,10 +867,9 @@
                 <strong>⚠️ Harbor parent root extremely CU-crowded:</strong> Harborstone CU (WA), Harbor Federal CU (CA, acquired by Southland), Harbor Pointe CU (MN/WI), Harbor CU (Green Bay WI), Safe Harbor CU (MI), <strong>HarborOne Bank</strong> (MA/RI, runs "HarborOne U" financial education — direct adjacency to Rise's coaching), Bar Harbor Bank &amp; Trust. None use "Bux" specifically, but the "Harbor" half is so generic in CU naming that confusion analysis is non-trivial. Workable, but lives in a busier neighborhood than CedarCents or CoveCents.
             </div>
             <span class="verdict maybe">⚡ All 3 domains free — but Harbor parent root extremely crowded in CU space</span>
-        </div>
-
-        <div class="name-card caution">
-            <h2>PineKash <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
+</div>
+<div id="yellow-14">
+<h2>PineKash <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
             <div class="tagline">"Tall and steady money"</div>
             <ul class="domain-list">
                 <li><span class="dot green"></span> <span class="avail">pinekash.com — AVAILABLE ✓</span></li>
@@ -520,10 +883,9 @@
                 <strong>⚠️ Pine parent root rising in consumer finance:</strong> <strong>Pine AI / 19pine.ai</strong> (US, launched 2024) is an active consumer-finance assistant for money-saving and bill negotiation — <em>direct adjacency to Rise's space</em>. <strong>Pine Labs</strong> (Indian POS/payments giant, ~$6B IPO valuation, OpenAI partnership Feb 2026) dominates "Pine + fintech" SEO globally. <strong>Pine Financial Group</strong> (US real-estate lender). "Kash" alone is also noisy (Kash Financial Services IN, Kash.io, Kash POS). The compound is clean, but the parent roots stack against it. Less compelling than CedarCents / CoveCents.
             </div>
             <span class="verdict maybe">⚡ All 3 domains free — but Pine AI is a direct-adjacency consumer-finance brand</span>
-        </div>
-
-        <div class="name-card caution">
-            <h2>NorthCents <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
+</div>
+<div id="yellow-15">
+<h2>NorthCents <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
             <div class="tagline">"Find your bearing in cents"</div>
             <ul class="domain-list">
                 <li><span class="dot green"></span> <span class="avail">northcents.com — AVAILABLE ✓</span></li>
@@ -537,10 +899,9 @@
                 <strong>⚠️ North parent root densely populated:</strong> <strong>True North FCU</strong> (AK, financial wellness center — Round 6's killer competitor), <strong>NorthCountry FCU</strong> (VT), <strong>Northern Credit Union</strong> (NY + Ontario), <strong>North Central Area CU</strong> (MI), plus the <strong>North American Fintech Coalition</strong>. None use "Cents," but the directional + finance compound feels descriptive/weak and may not be distinctive enough for a strong TM. True North FCU's "Financial Wellness Center" creates particular semantic proximity. Workable but lives in a crowded semantic neighborhood.
             </div>
             <span class="verdict maybe">⚡ All 3 domains free — but North + finance compound is semantically crowded</span>
-        </div>
-
-        <div class="name-card caution">
-            <h2>KashHarbor <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
+</div>
+<div id="yellow-16">
+<h2>KashHarbor <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
             <div class="tagline">"Where your kash anchors"</div>
             <ul class="domain-list">
                 <li><span class="dot green"></span> <span class="avail">kashharbor.com — AVAILABLE ✓</span></li>
@@ -554,10 +915,9 @@
                 <strong>⚠️ Stacks two semi-occupied roots:</strong> Same Harbor caveats as HarborBux (HarborOne Bank running HarborOne U, plus 5+ Harbor CUs) plus a "Kash"-prefix that has slightly payday/loan-app connotation in some markets (Kash Financial Services, BC Kash Microfinance Lagos). Inverting the order doesn't escape either concern. Less compelling than HarborBux which at least follows the established -Bux suffix pattern.
             </div>
             <span class="verdict maybe">⚡ All 3 domains free — but stacks two crowded financial roots</span>
-        </div>
-
-        <div class="name-card caution">
-            <h2>SproutPenny <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
+</div>
+<div id="yellow-17">
+<h2>SproutPenny <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
             <div class="tagline">"Grow a penny"</div>
             <ul class="domain-list">
                 <li><span class="dot red"></span> <span class="taken">sproutpenny.com — TAKEN (Mar 9, 2026 — ~2 months old, Cloudflare-shielded)</span></li>
@@ -571,10 +931,9 @@
                 <strong>⚠️ Recent .com grab + Sprout-family TM risk:</strong> No USPTO hit on the exact compound. <code>sproutpenny.com</code> was registered just <strong>March 9, 2026</strong> (~2 months ago) under Cloudflare privacy — no product, no traffic, plausibly acquirable but unverified. The broader risk: <strong>SPROUT SAVINGS</strong> is a registered USPTO trademark held by <strong>Northwest Community Credit Union</strong> in Class 36 — meaning a peer CU already holds a Sprout-family mark for savings products. Confusion analysis for "SproutPenny" in the same class is non-trivial. SproutBux/SproutKash, already in the Round 1–3 shortlist, faced this risk too and were considered clear; SproutPenny inherits the same hazard.
             </div>
             <span class="verdict maybe">⚡ .org/.net free; .com just grabbed Mar 2026; same NCCU SPROUT SAVINGS TM risk as SproutBux/Kash</span>
-        </div>
-
-        <div class="name-card caution">
-            <h2>SproutVault <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
+</div>
+<div id="yellow-18">
+<h2>SproutVault <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
             <div class="tagline">"Grow what's stored"</div>
             <ul class="domain-list">
                 <li><span class="dot red"></span> <span class="taken">sproutvault.com — TAKEN (Jul 2023; Squarespace, no live site)</span></li>
@@ -588,10 +947,9 @@
                 <strong>⚠️ Same NCCU SPROUT SAVINGS Class 36 risk:</strong> No active fintech competitor on the exact compound. <code>sproutvault.com</code> is held by a private 2023-vintage Squarespace registrant with no live site — investor-held, plausibly acquirable. The real risk: <strong>SPROUT SAVINGS</strong> registered USPTO trademark (Northwest Community Credit Union, Class 36). "Vault" semantically overlaps "Savings" in a way "Bux" or "Kash" does not — confusion analysis is harder to defeat for SproutVault than for SproutBux.
             </div>
             <span class="verdict maybe">⚡ .org/.net free; .com investor-held; "Vault" overlaps "Savings" — higher TM risk than SproutBux</span>
-        </div>
-
-        <div class="name-card caution">
-            <h2>RainVault <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
+</div>
+<div id="yellow-19">
+<h2>RainVault <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
             <div class="tagline">"Catch and keep"</div>
             <ul class="domain-list">
                 <li><span class="dot red"></span> <span class="taken">rainvault.com — TAKEN (Jan 2013; Atom.com marketplace for sale)</span></li>
@@ -605,10 +963,9 @@
                 <strong>⚠️ Active non-fintech product on the name:</strong> <strong>RainVault</strong> is an existing product name — <strong>ACF West</strong> sells an underground stormwater detention module under the name (acfwest.com/products/rainvault). Civil engineering / geosynthetics — completely outside Class 36, so no direct TM bar, but the name carries unregistered common-law rights in commerce and clutters SEO/search. <code>rainvault.com</code> is parked on Atom.com (premium aftermarket, typically $2k–$50k). No fintech, no credit union, no crypto on the exact name.
             </div>
             <span class="verdict maybe">⚡ .org/.net free + no Class 36 conflict — but .com is premium aftermarket and clashes with ACF West stormwater product</span>
-        </div>
-
-        <div class="name-card caution">
-            <h2>CentSpark <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
+</div>
+<div id="yellow-20">
+<h2>CentSpark <span class="badge new">NEW</span> <span class="badge warn">CAUTION</span></h2>
             <div class="tagline">"Ignite your savings"</div>
             <ul class="domain-list">
                 <li><span class="dot red"></span> <span class="taken">centspark.com — TAKEN (Jan 2025; HugeDomains $9,595 + apparel storefront)</span></li>
@@ -622,17 +979,9 @@
                 <strong>⚠️ Premium .com + clutter:</strong> <code>centspark.com</code> is listed on HugeDomains for <strong>$9,595</strong> (or 24 payments of $399.79) and either also hosts or recently hosted an apparel/lingerie e-commerce storefront ("Invisible Lift Bra," "VERA CHARM," "Lux Rosy"). There's also a Korean "Cent Spark" manhwa/manga title indexed on Bato.to and TikTok adding SEO noise. No fintech, no credit union, no crypto on the exact compound — Class 36 is clean. But the .com is expensive and the search-results page is cluttered with non-fintech brands.
             </div>
             <span class="verdict maybe">⚡ Class 36 clean — but .com is $9.6k premium with apparel + manhwa search clutter</span>
-        </div>
-
-    </div>
-
-    <h2 class="section-title">🔴 Red — dead (50)</h2>
-    <p class="section-sub">Active fintech competitor on the exact mark, registered USPTO trademark in Class 36, all 3 standard TLDs locked up by long-term owners, or unrecoverable parent-root collision (often a credit union running a financial-wellness program under the same name).</p>
-
-    <div class="name-grid">
-
-        <div class="name-card conflict">
-            <h2>KashLab <span class="badge dead">CONFLICT</span></h2>
+</div>
+<div id="yellow-21">
+<h2>KashLab <span class="badge warn">CAUTION</span></h2>
             <div class="tagline">"Your money laboratory"</div>
             <ul class="domain-list">
                 <li><span class="dot red"></span> <span class="taken">kashlab.com — TAKEN (2012)</span></li>
@@ -645,935 +994,50 @@
             <div class="conflicts">
                 <strong>⚠️ Major Conflict:</strong> <strong>KashLab Pte Ltd</strong> is an active Singapore fintech incorporated in 2017. They build <strong>KashBanc</strong>, a supply-chain finance platform for banks serving SMEs. Listed on Crunchbase, RocketReach, and Singapore's business registry. Direct collision in financial services.
             </div>
-            <span class="verdict no">❌ Dead — active Singapore fintech + .com taken since 2012</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>Ascenda <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Rise, in Latin"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">ascenda.com — TAKEN (1999)</span></li>
-                <li><span class="dot red"></span> <span class="taken">ascenda.net — TAKEN (2004)</span></li>
-                <li><span class="dot red"></span> <span class="taken">ascenda.org — TAKEN (2015)</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> Latin "ascend" — upward movement. Tonally close to "Rise" itself (potentially an intentional continuity play).
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Direct fintech competitor:</strong> <strong>Ascenda</strong> (ascendaloyalty.com, formerly Kaligo, founded 2013) is a global loyalty-as-a-service provider for financial institutions. Customers include <strong>HSBC, Capital One, American Express, Brex, Virgin Money Australia</strong>. In Feb 2025 they partnered with Galileo Financial Technologies (SoFi). Bulls-eye overlap with our category.
-            </div>
-            <span class="verdict no">❌ Absolutely dead — global fintech serving HSBC/Capital One/Amex</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>Prosperon <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Prosperity, continued"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">prosperon.com — TAKEN (1999)</span></li>
-                <li><span class="dot red"></span> <span class="taken">prosperon.net — TAKEN (2021)</span></li>
-                <li><span class="dot red"></span> <span class="taken">prosperon.org — TAKEN (2021)</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> "Prosper" + "-on" (continuation). Aspirational, onward-looking.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Exact same space:</strong> <strong>ProsperOn</strong> (Boston, founded 2021, Fintech Sandbox member) is a <em>financial education platform for college students</em> — essentially Rise's mission with a younger target. Separately, Prosperon (India) is a 30-year wealth management firm with a P.R.O.F.I.T. brokerage division (BSE symbol intcapm). All three standard TLDs gone.
-            </div>
-            <span class="verdict no">❌ Dead — direct competitor in financial education + all domains gone</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>ProsperIQ <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Prosperity intelligence"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">prosperiq.com — TAKEN (2015)</span></li>
-                <li><span class="dot green"></span> <span class="avail">prosperiq.net — AVAILABLE ✓</span></li>
-                <li><span class="dot red"></span> <span class="taken">prosperiq.org — TAKEN (Aug 2025)</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> Prosperity + intelligence. Parallel to FinCoachIQ but built on "Prosper" root.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Direct mission overlap:</strong> <strong>ProsperIQ</strong> (prosperiq.in) is an <em>active non-profit financial education platform</em> — "evidence-based education, reaching those who need guidance most, breaking cycles of financial uncertainty." That is Rise's mission statement, on a different domain. Plus the broader Prosper crowding (Prosper Marketplace, Prosperum, etc.).
-            </div>
-            <span class="verdict no">❌ Dead — active nonprofit in our exact mission space</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>CashCompass <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Point to your money"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">cashcompass.com — TAKEN (2003)</span></li>
-                <li><span class="dot red"></span> <span class="taken">cashcompass.net — TAKEN (Aug 2023)</span></li>
-                <li><span class="dot red"></span> <span class="taken">cashcompass.org — TAKEN (Jun 2024)</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> Money + direction. Clean, obvious, easy to visualize.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Saturated:</strong> Three active budgeting products with this exact name — <a href="https://getcashcompass.com" style="color:#7b8fff">getcashcompass.com</a> (privacy-first budgeting tool, launching Feb 14, 2026), <a href="https://cashcompassai.com" style="color:#7b8fff">cashcompassai.com</a> (AI cash-flow forecasting), <strong>Cash Compass</strong> on Google Play (com.evermoredesigns.cashcompass), plus a GitHub project of the same name. All 3 standard TLDs gone.
-            </div>
-            <span class="verdict no">❌ Dead — three live budgeting apps + all domains gone</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>FinCoach <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Your financial coach"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">fincoach.com — TAKEN (2004)</span></li>
-                <li><span class="dot red"></span> <span class="taken">fincoach.net — TAKEN (2002)</span></li>
-                <li><span class="dot red"></span> <span class="taken">fincoach.org — TAKEN (Apr 2024)</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> Direct description of a financial-coaching product.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Heavily occupied:</strong> Active businesses/apps on this exact name: fincoach.app (AI coach), fincoach.biz, fin-coach.com, thefincoach.com, fincoach.space, ifmfincoach.com, fincoach.com.au, fincoachbd.com; App Store "More Money Mindset: FinCoach" (id6752801990); Google Play Fincoach (co.khal.goyqx) and "Financial Coach: Daily Tips." At least 8+ simultaneously active brands.
-            </div>
-            <span class="verdict no">❌ Dead — saturated name + all domains gone</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>FinVoyage <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Your money journey"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">finvoyage.com — TAKEN (2018)</span></li>
-                <li><span class="dot green"></span> <span class="avail">finvoyage.net — AVAILABLE ✓</span></li>
-                <li><span class="dot green"></span> <span class="avail">finvoyage.org — AVAILABLE ✓</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> Finance + voyage. Journey metaphor.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Active fintech app:</strong> <strong>FinVoyage</strong> is a live investment platform on Google Play (package <code>com.agfinancial.finvoyage</code>) by <strong>Tonic Byte (P) Ltd</strong> — handles shares, equities, commodities, mutual funds, and SIPs with calculators and fund analysis. Direct consumer-finance overlap.
-            </div>
-            <span class="verdict no">❌ Dead — live Google Play investment app</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>FinCompass <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Find your financial direction"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">fincompass.com — TAKEN (2004)</span></li>
-                <li><span class="dot red"></span> <span class="taken">fincompass.net — TAKEN (Jan 2025)</span></li>
-                <li><span class="dot red"></span> <span class="taken">fincompass.org — TAKEN (2018)</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> Finance + compass. Direction/guidance metaphor.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ All domains gone:</strong> No single dominant fintech "FinCompass" brand surfaced in search, but all three standard TLDs have been registered for years (.com since 2004, .org since 2018). No trademark-clean path given the domain shutout.
-            </div>
-            <span class="verdict no">❌ Dead — all 3 domains locked up long-term</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>Navify <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Navigate + clarify"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">navify.com — TAKEN (2007, redirects to Roche)</span></li>
-                <li><span class="dot green"></span> <span class="avail">navify.net — AVAILABLE ✓</span></li>
-                <li><span class="dot red"></span> <span class="taken">navify.org — TAKEN (2018)</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> "Navigate + clarify" — the same etymology Roche uses for the name.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Registered global trademark:</strong> <strong>navify®</strong> is Roche Diagnostics' unified digital-health platform, launched at HLTH 2022. Over <strong>6,500 customers</strong> worldwide. Registered trademark, active product family (navify Portal, navify Tumor Board, etc.). Not fintech-class but enormous brand recognition — and Roche will defend it aggressively even adjacent.
-            </div>
-            <span class="verdict no">❌ Dead — Roche's registered global brand</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>Ascensia <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Rising"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">ascensia.com — TAKEN (2001)</span></li>
-                <li><span class="dot red"></span> <span class="taken">ascensia.net — TAKEN (2009)</span></li>
-                <li><span class="dot red"></span> <span class="taken">ascensia.org — TAKEN (2017)</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> Rising, ascending — tonally close to Rise.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Registered USPTO TM:</strong> <strong>ASCENSIA</strong> is a registered USPTO trademark (Reg. 5324784, Serial 86983079) owned by <strong>Ascensia Diabetes Care Holdings AG</strong> (PHC Holdings, formerly Bayer Diabetes Care, HQ Basel). Covers medical diagnostic hardware, software, and monitoring devices — different Nice class from fintech, but the name recognition and TM watch-program make coexistence costly to defend.
-            </div>
-            <span class="verdict no">❌ Dead — registered USPTO TM + all domains gone</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>WealthWayfinder <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Find your way to wealth"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">wealthwayfinder.com — TAKEN (Nov 2023, LIVE financial news site)</span></li>
-                <li><span class="dot green"></span> <span class="avail">wealthwayfinder.org — AVAILABLE ✓</span></li>
-                <li><span class="dot green"></span> <span class="avail">wealthwayfinder.net — AVAILABLE ✓</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> Wealth + wayfinding. Sounds premium but leans wealth-management, which is a poor fit for Rise's financial-wellness positioning.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Live finance-content site:</strong> <code>wealthwayfinder.com</code> hosts an active financial news/content aggregator (Business, Investing, Politics, World news sections, newsletter signup). Not a competing app, but actively using the brand in the finance-information space — enough for USPTO citation and consumer confusion.
-            </div>
-            <span class="verdict no">❌ Dead — active finance-content site + brand-positioning mismatch</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>WealthTrekker <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"The wealth expedition"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">wealthtrekker.com — TAKEN (Jun 2023)</span></li>
-                <li><span class="dot green"></span> <span class="avail">wealthtrekker.net — AVAILABLE ✓</span></li>
-                <li><span class="dot green"></span> <span class="avail">wealthtrekker.org — AVAILABLE ✓</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> Wealth + trekking/journey. Adventurous, long-haul framing.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Positioning mismatch + domain:</strong> No named competitor surfaced. The "Wealth" prefix signals wealth management, which misaligns with Rise's credit-union financial-wellness positioning — you'd fight the semantic hill every time you explain the product. .com gone since mid-2023.
-            </div>
-            <span class="verdict no">❌ Dead — "Wealth" prefix fights Rise's positioning</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>Waylytics <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Analytics for your way"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">waylytics.com — TAKEN (Jul 2025; no live site)</span></li>
-                <li><span class="dot green"></span> <span class="avail">waylytics.net — AVAILABLE ✓</span></li>
-                <li><span class="dot green"></span> <span class="avail">waylytics.org — AVAILABLE ✓</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> "Way" + "analytics." But the "analytics" framing is B2B/data-tool territory — doesn't match a consumer financial-wellness product. Hard to read at a glance ("way-LYT-ics"?).
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Category mismatch + pronunciation:</strong> No fintech competitor surfaced, but "-lytics" is a B2B-analytics suffix (Waylytics reads as a Google Analytics-adjacent tool). Wrong register for a consumer savings brand. .com was registered mid-2025 but currently refuses connections.
-            </div>
-            <span class="verdict no">❌ Dead — wrong category register; unclear pronunciation</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>Levara <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Lift, raise up"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">levara.com — TAKEN (2005)</span></li>
-                <li><span class="dot red"></span> <span class="taken">levara.net — TAKEN (Oct 2024)</span></li>
-                <li><span class="dot red"></span> <span class="taken">levara.org — TAKEN (2017)</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> Latin root "levare" (to raise). Abstract, elegant, tonally close to Rise.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ All domains gone:</strong> No single dominant fintech "Levara" brand surfaced in search, but all three standard TLDs have been locked up for years — .com since 2005, .org since 2017, .net grabbed in Oct 2024. levara.com returned no content during verification. No TM-clean path to a standard domain.
-            </div>
-            <span class="verdict no">❌ Dead — all 3 standard TLDs gone, some since 2005</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>Riko <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Short, modern"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">riko.com — TAKEN (1998)</span></li>
-                <li><span class="dot red"></span> <span class="taken">riko.net — TAKEN (1999)</span></li>
-                <li><span class="dot red"></span> <span class="taken">riko.org — TAKEN (2004)</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> Short, punchy. Ambiguous origin (Japanese / Spanish / Slavic personal name).
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Premium legacy domains:</strong> Four-letter .com registered in 1998, .net in 1999, .org in 2004 — these are high-value short domains held by long-term owners. Acquisition cost on <code>riko.com</code> alone would likely be five-to-six figures. Plus "Riko" is a common given name in multiple cultures, complicating trademark in any class.
-            </div>
-            <span class="verdict no">❌ Dead — premium four-letter domains locked since 1998</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>Dora <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Gift" (Greek)</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">dora.com — TAKEN (1996); domainer-held placeholder</span></li>
-                <li><span class="dot red"></span> <span class="taken">dora.org — TAKEN (1999); LIVE Dora R-III School District (Missouri)</span></li>
-                <li><span class="dot red"></span> <span class="taken">dora.net — TAKEN (2003); LIVE aviation app studio</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> Greek for "gift." Warm, friendly, short.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Exact Rise-profile competitor:</strong> <strong>Dora Financial</strong> (dorafi.com) is a credit-union service organization (CUSO) founded August 2021 by <strong>USALLIANCE Federal Credit Union</strong>, now sponsored by six credit unions including <strong>Affinity Plus FCU, Digital FCU (DCU), Department of Labor FCU, Service FCU, and Inclusiv</strong>. Bilingual neobank for the underbanked — free checking, debit, bill pay, early direct deposit, and <em>free financial coaching via TrustPlus</em>. Tagline: "Better Than A Bank, Powered By Credit Unions." This is Rise's mission, product, and distribution model — already shipping for three years. Add Viacom's aggressive <strong>DORA the Explorer</strong> TM portfolio (5,000+ marks across Class 9/goods/entertainment), the EU's <strong>Digital Operational Resilience Act</strong> (DORA) dominating all "Dora + fintech" SEO, Google's DORA DevOps mark, and an active Dora AI website-builder brand (dora.run). A premium .com from 1996 sits on top of all of it.
-            </div>
-            <span class="verdict no">❌ Dead — credit-union-backed Rise peer already using the exact name</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>Maxwell <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Great stream" (Scottish surname)</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">maxwell.com — TAKEN (1994); Maxwell Technologies (ultracapacitors, acquired by Clarios 2025)</span></li>
-                <li><span class="dot red"></span> <span class="taken">maxwell.org — TAKEN (1996); Edmund F. Maxwell Foundation (Seattle, active)</span></li>
-                <li><span class="dot red"></span> <span class="taken">maxwell.net — TAKEN (1996); privacy-redacted long-term hold</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> Scottish surname, "great stream." Trusted, banker-feeling.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Registered USPTO TM covering credit unions:</strong> <strong>Maxwell Financial Labs, Inc.</strong> (himaxwell.com) owns <strong>USPTO MAXWELL™</strong> (Serial 97010964, first use 2015-10-09) in Class 9 with US sub-classes 021/023/026/<strong>036</strong>/038 — downloadable and cloud software for mortgage and loan transaction management, fulfillment, underwriting, payment/deposit management, plus SaaS/PaaS platforms for mortgage services. Founded 2015, based in Colorado, serves 300+ lenders including <em>credit unions, community banks, and non-depository mortgage banks</em>. $150B+ in loan volume processed. A new "Maxwell" in credit-union-adjacent financial services would hit a USPTO Section 2(d) wall and an infringement claim from a funded fintech. <code>.com</code> is also held by Maxwell Technologies (industrial, unrelated to finance but expensive and defended).
-            </div>
-            <span class="verdict no">❌ Dead — registered USPTO fintech TM explicitly covering credit unions</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>Pierre <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Stone" (French)</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">pierre.com — TAKEN (1995); redirects to Chiha Portraits (photography studio)</span></li>
-                <li><span class="dot red"></span> <span class="taken">pierre.org — TAKEN (1996); Pierre Area Chamber of Commerce (SD capital)</span></li>
-                <li><span class="dot red"></span> <span class="taken">pierre.net — TAKEN (1997); privacy-redacted</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> French for "stone" — solid, foundational.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Phonetically identical fintech with CUNA Mutual money:</strong> <strong>Piere</strong> (piere.com, Univers Tech LLC, Fort Lauderdale, founded 2022) is an AI-first "self-driving money" budgeting/savings/debt-payoff app with MyPlan™ and "Moves" auto-transfers, covering 98% of U.S. financial institutions. <strong>Raised $2.1M pre-seed in Oct 2025 from Trustage Ventures — CUNA Mutual's VC arm (credit-union money)</strong>, plus Grand Ventures, Selah Ventures, Samvid, Fabric VC. Also partners with FIs via white-label/co-branded distribution — Rise's exact go-to-market. Separately, a second <strong>Pierre</strong> (CloudWalk team, Sunnyvale, launched March 2026) is a conversational personal-finance app on Google Play (<code>io.cloudwalk.pierre</code>). Identical pronunciation in Class 36 = USPTO Section 2(d) confusingly-similar rejection.
-            </div>
-            <span class="verdict no">❌ Dead — CUNA-Mutual-backed phonetic twin (Piere) + Brazilian Pierre fintech</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>Herring <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"A fishy savings story"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">herring.com — TAKEN (1994); long-term hold, expiry 2031</span></li>
-                <li><span class="dot red"></span> <span class="taken">herring.org — TAKEN (1996); "coming soon" placeholder</span></li>
-                <li><span class="dot red"></span> <span class="taken">herring.net — TAKEN (1997); privacy-redacted</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> Surname, or the fish. Quirky, memorable in the PNW/Atlantic context.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ 125-year-old federally-chartered bank with the exact name:</strong> <strong>Herring Bank</strong> (herringbank.com) was founded 1899 in Vernon, TX as C.T. Herring Banking Company, U.S. Treasury charter 1903, rebranded to Herring Bank 2005. HQ Amarillo, TX. <strong>12 branches across Texas (9), Oklahoma (2), and Colorado (1)</strong> — celebrated 125 years in 2024. Full-service community bank: personal, mortgages, SBA 504, CMBS, construction, RV financing, business. 125 years of common-law rights in financial services. A new "Herring" in the same category would collide head-on.
-            </div>
-            <span class="verdict no">❌ Dead — 125-year-old federally-chartered community bank (Herring Bank)</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>Alex <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Defender of men" (Greek)</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">alex.com — TAKEN (1997); Apriora Inc. (YC W24 AI recruiting, paid $500K+)</span></li>
-                <li><span class="dot red"></span> <span class="taken">alex.org — TAKEN (1995); long-term hold</span></li>
-                <li><span class="dot red"></span> <span class="taken">alex.net — TAKEN (1996); privacy-redacted</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> One of the most common given names in English. Friendly, human.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ D2C financial coach already using the name + $500K .com floor:</strong> <strong>Alex Finance NYC</strong> (alexfinancenyc.com) is an active NYC financial-coaching business offering debt, budgeting, and credit coaching direct to consumers — near-identical service profile to Rise. Separately, <strong>Alex (Apriora Inc.)</strong> is a YC W24 company, $20M raised, using "Alex" as an AI-recruiting brand; founder Aaron Wang publicly disclosed paying $500K+ for alex.com on Frontlines.io. Even though Apriora's Class 9/35 recruiting is not Class 36 fintech, it owns the top of "Alex" search and the domain. "Alex" has near-zero inherent distinctiveness as one of the most common given names — USPTO distinctiveness hurdle is steep.
-            </div>
-            <span class="verdict no">❌ Dead — D2C financial coach on the name + $500K+ .com floor</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>Xander <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Defender of men" (short form of Alexander)</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">xander.com — TAKEN (1995); long-term hold, Wagtail CMS placeholder</span></li>
-                <li><span class="dot red"></span> <span class="taken">xander.org — TAKEN (1999); Xander Teleworks Inc.</span></li>
-                <li><span class="dot red"></span> <span class="taken">xander.net — TAKEN (1997); Kontur (publicly-listed)</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> Short form of Alexander. Modern, friendlier than "Alex" because less common.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Crowded Class 36:</strong> <strong>Xander Finance / Nixa Fincap Private Limited</strong> — India RBI-licensed Systemically Important NBFC, active corporate lender, part of The Xander Group (Singapore-origin, est. 2010). Plus <strong>Xander Insurance Services</strong> (Cape Coral FL, est. 2005, life/health/disability) and <strong>Xander Financial</strong> (Miramar FL, tax/insurance/annuities) — both Class 36. Homophonic collision with <strong>Zander Insurance Group</strong> (Nashville, founded 1927) — Dave Ramsey's recommended insurance partner, ~100-year-old brand — makes Class 36 USPTO examination risky. All three standard TLDs locked by long-term owners.
-            </div>
-            <span class="verdict no">❌ Dead — multiple Xander financial brands + Zander homophone in Class 36</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>Piedmont <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Foot of the mountain" (Italian)</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">piedmont.com — TAKEN (1995); listed for sale on Afternic</span></li>
-                <li><span class="dot red"></span> <span class="taken">piedmont.org — TAKEN (1995); Piedmont Healthcare (26 hospitals, GA)</span></li>
-                <li><span class="dot red"></span> <span class="taken">piedmont.net — TAKEN (1995); Open Broadband (ISP)</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> Italian "foot of the mountain" — regional identity, solidity, place-based.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ The worst possible collision for a credit-union rebrand:</strong> <strong>Piedmont Advantage Credit Union</strong> (pacu.com) — founded 1949, HQ Winston-Salem NC, six NC counties. Offers personal banking, financial-awareness blog, <em>Certified Credit Union Financial Counselors</em>, budgeting/debt webinars — Rise's exact service profile. Plus <strong>Piedmont Federal Bank</strong> (founded 1903, Winston-Salem, rebranded Feb 2024), 120+ years of common-law banking rights. The <strong>historic Piedmont Credit Union</strong> (Landis NC, founded 1918) is being commemorated in 2026 as the <em>first African American credit union in the United States</em> with an NC Highway Historical Marker — culturally weighty in the credit-union movement specifically. Add <strong>Piedmont Healthcare</strong> (owns piedmont.org, 26 hospitals), <strong>Piedmont Natural Gas</strong> (Duke subsidiary, 1M+ customers), and <strong>Piedmont Airlines</strong> (American Airlines Group). Completely unusable.
-            </div>
-            <span class="verdict no">❌ Dead — active credit-union peer + 1918 historic CU namesake + healthcare giant on .org</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>Green Goals <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Sustainable financial targets"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">greengoals.com — TAKEN (2009); ParkLogic ad-network parking</span></li>
-                <li><span class="dot red"></span> <span class="taken">greengoals.org — TAKEN (2009); expiry Aug 2026 (risky to plan around)</span></li>
-                <li><span class="dot red"></span> <span class="taken">greengoals.net — TAKEN (2023); listed for sale via DomainLions</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> "Green" (sustainability, or money) + goals. Aspirational, eco-adjacent.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Positioning mismatch + saturated green-fintech space:</strong> No dominant "Green Goals" fintech specifically, but the climate-fintech category is crowded — <strong>GreenFi, Aspiration, Karma Wallet, Commons</strong> (thecommons.earth), and others are live sustainability-focused banking/investing brands. For Rise (credit-union financial wellness, not a climate play), "Green Goals" forces users to assume you're a sustainability product, and "green" doubles as "money" ("greenback") — ambiguous overlap. Two-word descriptive names are inherently harder to trademark as a unit and harder to rank in search. All three TLDs are held by domain speculators (.com parked-monetized since 2009, .net explicitly listed for sale).
-            </div>
-            <span class="verdict no">❌ Dead — weak TM + positioning collides with climate fintech + all TLDs speculator-held</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>Treasure <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"What you value"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">treasure.com — TAKEN (1995); Legal Brand Domains brokerage, for sale</span></li>
-                <li><span class="dot red"></span> <span class="taken">treasure.org — TAKEN (1997); Treasure Ministries Gathering (AZ, active)</span></li>
-                <li><span class="dot red"></span> <span class="taken">treasure.net — TAKEN (1997); redirects to GoDaddy for-sale page</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> What you value — a warm, storybook framing for savings.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Multiple Class 36 brands + crypto noise:</strong> <strong>Treasure Financial / Treasure Technologies, Inc.</strong> (treasurefi.com) is an active SEC-Registered Investment Advisor B2B corporate-treasury platform ($2M+ deposit minimum, SOC-2/GDPR/FDIC/SIPC, backed by Thiel Capital and Katalyst). <strong>Treasure Card</strong> (treasurecard.com) is an active kids' educational debit card (Peoples Trust Company under Mastercard license) — direct financial-wellness category overlap. <strong>Treasure DAO</strong> (treasure.lol, $MAGIC token) dominates "Treasure + app/wallet" SEO with a large Arbitrum crypto community. Plus Viacom/Nickelodeon (Treasure Buddies) and Disney (Treasure Planet, 2002) hold adjacent TMs. All three standard TLDs are taken — .com and .net both on domain marketplaces with six-figure .com floor, .org is an active ministry with 10+ year tenure.
-            </div>
-            <span class="verdict no">❌ Dead — Treasure Financial + Treasure Card already in Class 36 + crypto brand noise</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>True North <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Find your bearing"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">truenorth.com — TAKEN (Feb 1995)</span></li>
-                <li><span class="dot red"></span> <span class="taken">truenorth.org — TAKEN (Jun 1998)</span></li>
-                <li><span class="dot red"></span> <span class="taken">truenorth.net — TAKEN (May 2002)</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> Navigational metaphor for purpose and direction. Common in coaching language.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Worst-possible CU collision:</strong> <strong>True North Federal Credit Union</strong> (truenorthfcu.org, Alaska, founded 1948) runs a "<strong>Financial Wellness Center</strong>" powered by MoneyEdu and a mobile-banking app on iOS/Android; signed Scienaptic AI for lending and Mahalo Banking in 2026. <strong>TruNorthern Federal Credit Union</strong> (Malone NY) and <strong>TruNorth Bank</strong> (rebranded from Abington Bank) are two more CU/bank brands using the same name. <strong>TrueNorth Companies</strong> (truenorth.co) is a fintech professional-services firm that built Upgrade and LendingClub and explicitly serves "banks, credit unions, and fintechs." A new "True North" in CU financial wellness collides on the brand, the product, and the audience.
-            </div>
-            <span class="verdict no">❌ Dead — True North FCU already runs a financial-wellness center under this exact name</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>Beacon <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"A light to steer by"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">beacon.com — TAKEN (Jul 1992; QXO / Beacon Roofing)</span></li>
-                <li><span class="dot red"></span> <span class="taken">beacon.org — TAKEN (Nov 1994)</span></li>
-                <li><span class="dot red"></span> <span class="taken">beacon.net — TAKEN (Aug 2000)</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> Guidance, visibility, lighthouse. Warm metaphor for a coaching brand.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Four+ credit unions already named Beacon:</strong> <strong>Beacon Credit Union</strong> (Indiana, est. 1931, beaconcu.org) — 50 IN counties, mobile app with Credit Sense/SavvyMoney financial-wellness features. <strong>Beacon Federal Credit Union</strong> (Houston-area, beaconfed.org) — Credit Sense integration. <strong>Beacon Financial Credit Union</strong> (Johnson City TN, beaconfcu.org) — healthcare-employee CU with financial counselors. <strong>Beacon Community Credit Union</strong> (Louisville KY, beaconccu.org). <strong>Beacon Community Bank</strong> (onlinebanking.beacon.bank). Plus <code>beacon.com</code> is held by QXO (the acquirer of Beacon Roofing Supply), a billion-dollar industrial. Class 36 is fully occupied.
-            </div>
-            <span class="verdict no">❌ Dead — at least four "Beacon" credit unions in our exact peer space</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>Sprout <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Grow from a seed"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">sprout.com — TAKEN (Oct 1994; parked on Afternic, premium)</span></li>
-                <li><span class="dot red"></span> <span class="taken">sprout.org — TAKEN (Jun 1996)</span></li>
-                <li><span class="dot red"></span> <span class="taken">sprout.net — TAKEN (May 1996)</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> Growth, beginnings — already established as a strong root for Rise (see Round 1–3 picks SproutBux and SproutKash).
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Solo "Sprout" is crowded in finance:</strong> <strong>Sprout Mortgage, LLC</strong> (Irvine CA) — Non-QM lender, subject to DFPI enforcement. <strong>Sprout Financial Solutions</strong> — business lending. <strong>Sprout Funding</strong> (Dallas Growth Capital DBA) — small-business financing. <strong>Sprout</strong> (UK fintech, May 2025 Innovate Finance Pitch360 winner) — AI mortgage-payments platform. <strong>Budget Sprout</strong> (budgetsprout.com) — head-on budgeting-app competitor: goals, AI insights, multi-account, iOS/Android, $9–$31/mo. <strong>Sprout</strong> (mygrowthsprout.com) — AI financial-education platform. <strong>StockSprout, LLC</strong> — registered USPTO Class 36 mark in brokerage/crypto. <code>sprout.com</code> is a premium aftermarket listing. <em>The compound forms SproutBux/SproutKash that survived Rounds 1–3 work precisely because solo "Sprout" is contested — the suffix carves out distinctiveness.</em>
-            </div>
-            <span class="verdict no">❌ Dead as a solo word — use SproutBux or SproutKash instead</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>Well Being / Wellbeing <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"The category name"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">wellbeing.com — TAKEN (NetNames corporate registrar)</span></li>
-                <li><span class="dot red"></span> <span class="taken">wellbeing.org — TAKEN (Sep 2000; CSC Corporate Domains — enterprise hold)</span></li>
-                <li><span class="dot red"></span> <span class="taken">wellbeing.net — TAKEN (May 2013)</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> Direct claim on the umbrella category that Rise's own product lives inside.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Descriptive of the category itself:</strong> "Financial wellbeing" is the industry term — used by <strong>Nudge</strong> ("a financial wellbeing platform"), <strong>LearnLux</strong>, <strong>Wisely by ADP</strong>, plus category pages on Bankrate, Gartner Peer Insights, G2, The Financial Brand, FinTech Magazine. USPTO would treat solo "Wellbeing" in Class 36 as merely descriptive of the service being sold — unregistrable as a strong mark without years of acquired-distinctiveness evidence. Both <code>.com</code> (NetNames, a corporate-grade UK registrar) and <code>.org</code> (CSC Corporate Domains, a Fortune-500 registrar) signal long-term enterprise holds.
-            </div>
-            <span class="verdict no">❌ Dead — descriptive category term; enterprise-held TLDs</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>Connect <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Bring it together"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">connect.com — TAKEN (Apr 1999; HubSpot, Inc. via MarkMonitor)</span></li>
-                <li><span class="dot red"></span> <span class="taken">connect.org — TAKEN (Nov 1994)</span></li>
-                <li><span class="dot red"></span> <span class="taken">connect.net — TAKEN (late 1990s legacy ISP)</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> Bridging members, institutions, and community.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ HubSpot owns the .com:</strong> <code>connect.com</code> is owned by <strong>HubSpot, Inc.</strong> (registrant org in WHOIS, MarkMonitor enterprise registrar) and used for "HubSpot Connect," their integrations marketplace — a CRM that sells heavily to credit unions via the Nook CUSO. Not fintech-class but directly adjacent and well-funded. Beyond HubSpot, "Connect" is generic across financial-services product naming (bank "Connect Card" products, dozens of CU online-banking portals called "Connect") and USPTO Class 36 has many live "CONNECT" composite marks.
-            </div>
-            <span class="verdict no">❌ Dead — HubSpot owns .com; generic in Class 36; all 3 TLDs gone</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>Community Bridge <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Span between people and money"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">communitybridge.com — TAKEN (Aug 1999)</span></li>
-                <li><span class="dot red"></span> <span class="taken">communitybridge.org — TAKEN (Nov 2018)</span></li>
-                <li><span class="dot red"></span> <span class="taken">communitybridge.net — TAKEN (Jan 2019; same holder as .org)</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> Combines two of Rise's audience pillars — community and connection. Tonally aligned but generic.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Adjacent CU + descriptive:</strong> <strong>Bridge Credit Union</strong> (Central Ohio, bridgecu.org) runs an explicit "Financial Wellness" program and uses "Bridge" heavily in member-facing branding. <strong>Bridge Investment Community Development Corporation</strong> (bridgeinvestmentcdc.org) is an Iowa/Illinois CDFI using the "community bridge" framing in its marketing copy. CommunityBridge is also the name of a Linux Foundation grant program (search-noise rather than collision). All three TLDs are long-held. "Community Bridge" is a common metaphor in CDFI marketing — distinctiveness for trademark purposes is weak.
-            </div>
-            <span class="verdict no">❌ Dead — all 3 TLDs locked + adjacent Bridge CU runs financial wellness</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>KashTrack <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Track your kash"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">kashtrack.com — TAKEN (Oct 2023; active app)</span></li>
-                <li><span class="dot red"></span> <span class="taken">kashtrack.org — TAKEN (Aug 2021; same owner)</span></li>
-                <li><span class="dot green"></span> <span class="avail">kashtrack.net — AVAILABLE ✓</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> Modern "Kash" + tracking. Parallel coinage to SproutKash.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Live shipping budgeting app:</strong> <strong>KashTrack: Smart AI Budgeting</strong> by KMD Electronics is an active iOS app (apps.apple.com/us/app/kashtrack-smart-ai-budgeting/id6503706446) and Google Play app (com.kmdelectronics.KashTrackApp) with a brand site at kashtrack.app — 50/30/20 budgeting, AI receipt OCR, voice-to-expense, savings-goal tracking. Owns the .com, the .org, and both store listings. Direct, head-on competitor on the exact name and exact product category. The bare .net availability is meaningless given the existing brand presence.
-            </div>
-            <span class="verdict no">❌ Dead — live shipping AI-budgeting app owns the name and both app stores</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>Budget Tracker <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Generic category, generic name"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">budgettracker.com — TAKEN (Oct 2003; active 22-yr-old SaaS)</span></li>
-                <li><span class="dot red"></span> <span class="taken">budgettracker.org — TAKEN (Mar 2016; same operator)</span></li>
-                <li><span class="dot red"></span> <span class="taken">budgettracker.net — TAKEN (Mar 2016; same operator, defensive)</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> The plainest description of the budgeting feature. Easy to say, impossible to own.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Generic + 22-year incumbent:</strong> <strong>BudgetTracker.com</strong> is a live SaaS budgeting product running since 2003 — envelope budgeting, bill calendar, forecasts, custom apps. The same operator grabbed all 3 TLDs in 2016 as defensive registrations. Plus the App Store and Google Play each host five-plus apps literally titled "Budget Tracker" (HSAG Budget Tracker, Fin – Budget Tracker, Money Tracker – Budget Planner, Teocoding Budget Tracker, Microsoft Office's Budget Tracker add-in). USPTO would treat the bare phrase as descriptive/generic in Class 36 — unregistrable as a brand.
-            </div>
-            <span class="verdict no">❌ Dead — generic category term + 22-year incumbent + 5+ App Store apps</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>Upwards <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Onward and up"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">upwards.com — TAKEN (Jan 1999)</span></li>
-                <li><span class="dot red"></span> <span class="taken">upwards.org — TAKEN (Feb 2003)</span></li>
-                <li><span class="dot red"></span> <span class="taken">upwards.net — TAKEN (Feb 2000)</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> Plural of upward — directional, optimistic. Same tonal family as Rise itself.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Indian NBFC + US credit union:</strong> <strong>Upwards Fintech</strong> (upwards.in, RBI-registered NBFC, founded 2017) is an Indian instant personal-loan app acquired by Lendingkart in Jan/Feb 2023 for ~$15M; still operating as "Upwards Fintech (A Lendingkart brand)" with the Google Play app <code>com.goupwards</code> and ₹50+ Cr/yr disbursed. <strong>Upward Credit Union</strong> (upwardcu.org, Burlingame CA, founded 1956) offers BALANCE financial-wellness counseling, "Financial Checkup with a coach," and Member Relief programs — Rise's product, branded "Upward." Class 36 confusion analysis would treat singular/plural as confusingly similar given identical services. <strong>Upward Financial</strong> (upwardli.com) is a third financial brand on the root.
-            </div>
-            <span class="verdict no">❌ Dead — Upwards India NBFC + Upward CU shipping the same financial-wellness product</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>FinCoach <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Previously researched — status confirmed"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">fincoach.com — TAKEN (2004)</span></li>
-                <li><span class="dot red"></span> <span class="taken">fincoach.org — TAKEN (Apr 2024)</span></li>
-                <li><span class="dot red"></span> <span class="taken">fincoach.net — TAKEN (2002)</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> Direct description of a financial-coaching product. Researched in Round 4 — flagged here per request for a re-check.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Round 4 conflict set still stands and has grown:</strong> Active brands in or adjacent to our space: <strong>fincoach.app</strong> ("AI-Powered Personal Finance Coach" — gamified savings, AI insights, budgeting, coaching — direct competitor), <strong>fin-coach.app</strong> (FinCoach AI), <strong>thefincoach.com</strong> (The Finance Coach), fincoach.biz, fin-coach.com, fincoach.me, fincoach.com.au, ifmfincoach.com; Google Play apps published by org.vnlab_apps and co.khal.goyqx, both titled "Financial Coach / Fincoach"; App Store "More Money Mindset: FinCoach." New since Round 4: <strong>Financial Finesse</strong> won "Best Financial Coaching Platform" at the 2025 FinTech Breakthrough Awards, and Chime rolled out AI-driven financial coaching in 2025 — the category is more crowded, not less.
-            </div>
-            <span class="verdict no">❌ Dead — Round 4 status holds; competitor count up, not down</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>CABL <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Credit and Budgeting Leader"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">cabl.com — TAKEN (Sep 1996; LSU sports/politics site since 1996)</span></li>
-                <li><span class="dot red"></span> <span class="taken">cabl.org — TAKEN (Jul 1996; expiry 2031, long pre-paid)</span></li>
-                <li><span class="dot red"></span> <span class="taken">cabl.net — TAKEN (Feb 2012)</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> Acronym for "Credit and Budgeting Leader." Stiff, jargon-heavy unfolded form; unmemorable as four loose consonants.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Acronym already means "asset-based lending" + active .com:</strong> <strong>CABL.com</strong> is a 30-year-old, content-heavy LSU/Louisiana sports and politics community run by DBMV Solutions — won't sell cheap. The .org has been intentionally pre-paid through 2031. The acronym most commonly resolves to <strong>Canadian Association of Black Lawyers</strong>; in finance glossaries it means "Comprehensive Asset Based Lending" — a credit-adjacent term that creates active confusion in Rise's category. The unfolded "Credit and Budgeting Leader" phrase returns no organizational hit but is corporate-speak that doesn't ladder to a consumer brand.
-            </div>
-            <span class="verdict no">❌ Dead — all 3 TLDs locked + acronym already overloaded in finance</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>BAFL <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Budget and Financial Leader"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">bafl.com — TAKEN (Jul 1997)</span></li>
-                <li><span class="dot red"></span> <span class="taken">bafl.org — TAKEN (May 2011)</span></li>
-                <li><span class="dot red"></span> <span class="taken">bafl.net — TAKEN (Dec 2000)</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> Acronym for "Budget and Financial Leader."
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ BAFL is Bank Alfalah's PSX ticker:</strong> <strong>Bank Alfalah Limited</strong> — incorporated 1992 in Pakistan, ~17,540 employees, trades on the Pakistan Stock Exchange under ticker <code>BAFL</code>. Operates retail banking, credit cards, Islamic banking, SME and agri loans across Pakistan, Bangladesh, Afghanistan, and the Middle East. Although they don't operate retail in the US, a US fintech adopting "BAFL" in Class 36 would face a near-immediate challenge from their counsel under standard international-brand-protection enforcement. The four-letter acronym also reads as nonsense to consumers and has zero spoken mnemonic value.
-            </div>
-            <span class="verdict no">❌ Dead — identical PSX ticker of an active major commercial bank</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>Helping Hands <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"A hand up"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">helpinghands.com — TAKEN (Apr 2003)</span></li>
-                <li><span class="dot red"></span> <span class="taken">helpinghands.org — TAKEN (Feb 1997; Helping Hands of America Foundation)</span></li>
-                <li><span class="dot red"></span> <span class="taken">helpinghands.net — TAKEN (May 1998)</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> Warm, assistance-oriented. Used heavily in charity language.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Saturated in our exact niche:</strong> <strong>Helping Hands Financial LLC</strong> (Miami, 700clubguaranteed.com) is an active credit-repair/financial-services brand on Trustpilot, LinkedIn, and Facebook. <strong>Peoples Advantage FCU "Helping Hands"</strong> is a credit-union financial-literacy program partnered with Consulytica. <strong>USF Credit Union "Helping Hand"</strong> is a member-relief loan program. <strong>Family Savings CU / Emblem CU "Helping Hands Foundation Fund"</strong> is a community-assistance fund. Pending USPTO application 98888285 (Dec 2024) — "HELPING HANDS SUPPORT FOR A BETTER TOMORROW" — covers a website matching users to financial-assistance programs, which is essentially Rise's community pillar.
-            </div>
-            <span class="verdict no">❌ Dead — multiple credit-union "Helping Hands" programs + active CU-adjacent USPTO filing</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>Bridge <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Span the gap"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">bridge.com — TAKEN (Mar 1992; 33-year-old premium)</span></li>
-                <li><span class="dot red"></span> <span class="taken">bridge.org — TAKEN (Jan 1996; Bridge International Academies)</span></li>
-                <li><span class="dot red"></span> <span class="taken">bridge.net — TAKEN (Mar 1995)</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> Connection, transition, support — common in fintech marketing.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ One of the most contested words in finance right now:</strong> <strong>Bridge</strong> (bridge.xyz) — stablecoin payment infrastructure, <strong>acquired by Stripe in Feb 2025 for $1.1 billion</strong> (Stripe's largest acquisition ever). <strong>BridgeFT</strong> (bridgeft.com) — WealthTech API platform, acquired by iAltA Holdings Jan 2026. <strong>Bridge Credit Union</strong> (Columbus OH, founded 1967, ~$243M assets) — in Rise's exact CU peer space, running its own financial wellness program. <strong>Texas Bridge Credit Union</strong> (txbcu.com). <strong>Bridge Money</strong> (bridgemoney.co) — Visa debit-card rewards app on Blue Ridge Bank rails. <strong>Bridge: Fintech</strong> on App Store (id 6482850955) — personal-finance hub aggregating accounts. <strong>Bridge Financial Technology</strong> — Crunchbase-listed fintech. <code>bridge.org</code> is held by Bridge International Academies (~750k students, $100M+ raised).
-            </div>
-            <span class="verdict no">❌ Dead — Stripe paid $1.1B for "Bridge"; multiple CUs and fintechs already on the name</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>Cash Bridge <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Bridge from paycheck to paycheck"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">cashbridge.com — TAKEN (Aug 2016; locked client statuses)</span></li>
-                <li><span class="dot red"></span> <span class="taken">cashbridge.org — TAKEN (Oct 2025; very recent)</span></li>
-                <li><span class="dot red"></span> <span class="taken">cashbridge.net — TAKEN (Apr 2025)</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> Short-term cash flow help — descriptive of payday/bridge-loan products specifically.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Five-plus active lenders on this exact name globally:</strong> <strong>CashBridge</strong> (India) — instant personal loans ₹5K–₹1L by Zerodue Services with RBI-registered NBFC Rachit Capital, on Google Play. <strong>Cashbridge Microfinance Bank Limited</strong> (Nigeria, cashbridgemfb.com, cashbridgeloans.com) with "Cashbridge Urgent10K" loan app. <strong>Cash Bridge</strong> (Australia) — Melbourne small-loans lender ($300–$2,000), savvy.com.au-listed. <strong>Cashbridge Mobile</strong> — separate US App Store app (id 6464597552). <strong>CashBridge.tech</strong> — DeFi/stablecoin platform. <strong>CASH Bridge™ by Wolters Kluwer</strong> — branded financial-software product. The 2025 .org/.net registrations indicate ongoing brand land-grabs. Plus the phrase is descriptive of a payday/bridge-loan product — fights Rise's positioning (we're not a lender).
-            </div>
-            <span class="verdict no">❌ Dead — 5+ active "CashBridge" lenders worldwide + descriptive of bridge-loan products</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>Do Good <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Money for good"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">dogood.com — TAKEN (Apr 2002)</span></li>
-                <li><span class="dot red"></span> <span class="taken">dogood.org — TAKEN (Feb 2004)</span></li>
-                <li><span class="dot red"></span> <span class="taken">dogood.net — TAKEN (May 2003)</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> Ethical/values-driven framing.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Phonetic CU collision:</strong> <strong>DuGood Federal Credit Union</strong> (dugood.org, Southeast Texas) is an active credit union with iOS and Android mobile-banking apps under the "DuGood" name — <em>phonetically identical to "Do Good"</em>. USPTO confusion analysis in Class 36 would catch this. Plus <strong>DoGood People</strong> (dogoodpeople.com) is an ESG/sustainability employee-engagement SaaS with iOS+Android app "DoGood" — different segment, identical brand string. <strong>Do Good. Make Money.</strong> (dogood-makemoney.com) is a third sustainability/investing brand. The phrase is also charitably broad — weak distinctiveness for a financial mark.
-            </div>
-            <span class="verdict no">❌ Dead — DuGood FCU (phonetic match in our peer space) + DoGood People SaaS</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>Community <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"The third audience pillar, made literal"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">community.com — TAKEN (Apr 1996; Community Inc.)</span></li>
-                <li><span class="dot red"></span> <span class="taken">community.org — TAKEN (Sep 1998)</span></li>
-                <li><span class="dot red"></span> <span class="taken">community.net — TAKEN (Apr 1994)</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> The third pillar of Rise's audience model, as a brand. Direct, unmistakable.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Generic + premium domain owned by a funded tech company:</strong> <strong>Community Inc.</strong> (community.com) is the SMS-messaging-for-creators platform founded 2019 by Guy Oseary, Ashton Kutcher, et al. — well-funded, won't sell. Separately, "Community Bank," "Community Federal Credit Union," and "Community First Credit Union" are common institution names — dozens of "COMMUNITY ___" registered marks live in USPTO Class 36. Distinctiveness is weak in a banking context (descriptive of who the institution serves).
-            </div>
-            <span class="verdict no">❌ Dead — premium .com held by funded tech company; word generic in banking</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>Guide <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Show the way"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">guide.com — TAKEN (Oct 1998; Guide AI travel app)</span></li>
-                <li><span class="dot red"></span> <span class="taken">guide.org — TAKEN (Oct 1994)</span></li>
-                <li><span class="dot red"></span> <span class="taken">guide.net — TAKEN (Mar 1995)</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> Coaching-adjacent framing.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Active consumer brand on .com + generic in finance:</strong> <strong>Guide.com</strong> is now an active AI travel-planning consumer brand (Expedia partner, copyright "Guide © 2026"). Beyond that, "guide" is pervasive in financial-services marketing — <strong>MoneyGuide / RightCapital</strong> are established planning-software brands cited in 2026 financial-coaching tool roundups, and many advisory firms use "Guide" as a product name. USPTO Class 36 contains many composite "GUIDE" marks. Solo distinctiveness is very weak.
-            </div>
-            <span class="verdict no">❌ Dead — active consumer brand on .com; weak distinctiveness in Class 36</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>Prosper <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Auto-red (per Round 4 finding)"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">prosper.com — TAKEN (Apr 1996; Prosper Marketplace, fortress-locked)</span></li>
-                <li><span class="dot red"></span> <span class="taken">prosper.org — TAKEN (Dec 2001)</span></li>
-                <li><span class="dot red"></span> <span class="taken">prosper.net — TAKEN (Jan 2000)</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> Aspirational, finance-adjacent.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Dominant lending fintech + regional banking giant:</strong> <strong>Prosper Marketplace Inc.</strong> — America's first peer-to-peer lending marketplace, founded 2005, <strong>$23B+ funded loans</strong>, owns multiple Class 36 marks; April 2025 signed a $500M forward-flow agreement with Fortress to scale further. "Prosper: Personal Loans" is the Google Play app. <code>prosper.com</code> is locked down with all six server/client transfer-prohibited statuses (a fortress). Plus <strong>Prosperity Bancshares</strong> ($38B Texas/Oklahoma regional bank) and many "Prosperity Bank" / "Prosperity FCU" institutions. Round 4 had already flagged the "Prosper" parent space as a minefield (ProsperOn, ProsperIQ, ProsperQuest, Prosperum) — solo "Prosper" is the apex of that crowded category.
-            </div>
-            <span class="verdict no">❌ Dead — Prosper Marketplace owns the .com and the Class 36 mark</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>Grow <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"What every wellness brand says"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">grow.com — TAKEN (May 1997; Grow Inc. → Epicor 2022)</span></li>
-                <li><span class="dot red"></span> <span class="taken">grow.org — TAKEN (Feb 1996)</span></li>
-                <li><span class="dot red"></span> <span class="taken">grow.net — TAKEN (Apr 1998; CSC Corporate Domains — enterprise hold)</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> Universal financial-wellness verb.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ A credit-union peer literally uses "Grow" as its consumer brand:</strong> <strong>Grow Financial Federal Credit Union</strong> (growfinancial.org, Tampa) ships a "<strong>Grow Mobile Banking</strong>" app on iOS and Android with a "Personal Money Manager" for budgeting and savings goals — <em>functionally identical to Rise's product</em>. This is the textbook killer: same brand word, same product, same audience (CU members). Separately, <code>grow.com</code> is owned by <strong>Grow Inc.</strong>, a no-code BI SaaS acquired by Epicor in March 2022 — won't sell. <code>grow.net</code> sits on CSC Corporate Domains (enterprise hold).
-            </div>
-            <span class="verdict no">❌ Dead — Grow Financial FCU ships an identical product under this exact name</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>RainCoin <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Crypto-tainted suffix"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">raincoin.com — TAKEN (Apr 2013; Atom.com aftermarket)</span></li>
-                <li><span class="dot red"></span> <span class="taken">raincoin.org — TAKEN (May 2023)</span></li>
-                <li><span class="dot red"></span> <span class="taken">raincoin.net — TAKEN (Jan 2018)</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> Rain + Coin. Same PNW family but Coin suffix reads as cryptocurrency.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Active memecoin + Rain crypto exchange + rain.xyz stablecoin:</strong> <strong>Rain Coin (RAIN)</strong> is an automated meme coin trading on Polygon (contract <code>0x8e677ca17065ed74675bc27bcabadb7eef10a292</code>), listed on CryptoSlate, PolygonScan, ChangeNOW, CoinCarp, active Twitter @GetRainCoin. <strong>Rain</strong> is also a Middle East regulated crypto exchange (founded 2017, central bank of Bahrain licensed). <strong>rain.xyz</strong> is a stablecoin payments platform that raised $250M Series C at $1.95B valuation in 2025 — owns "Rain" + Class 36 financial services trademark via Signify Holdings. The "Coin" suffix in 2026 is unavoidable crypto-collision territory.
-            </div>
-            <span class="verdict no">❌ Dead — active memecoin on the name + "Rain" already heavy in regulated crypto/stablecoin</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>RainStash <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Gamer + neobank collision"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">rainstash.com — TAKEN (Sep 2019; active Risk of Rain wiki)</span></li>
-                <li><span class="dot green"></span> <span class="avail">rainstash.org — AVAILABLE ✓</span></li>
-                <li><span class="dot green"></span> <span class="avail">rainstash.net — AVAILABLE ✓</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> Rain + Stash.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Gaming asset + Stash neobank root:</strong> <code>rainstash.com</code> is an active <strong>Risk of Rain</strong> video-game item database/wiki — "a convenient list of all the items and their effects from the game Risk of Rain" — well-known in the gamer community, won't be cheap to acquire and won't release the brand. Separately: <strong>Stash Financial Inc.</strong> is a $1B+ raised US neobank in Rise's exact peer space (savings/budgeting consumer fintech). Even though "RainStash" is a compound, the "Stash" suffix in a savings-app context invites direct confusion. Two-front risk.
-            </div>
-            <span class="verdict no">❌ Dead — .com locked in gamer-community wiki + "Stash" is a major fintech root in peer space</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>SproutCoin <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Already a cryptocurrency"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">sproutcoin.com — TAKEN (Jun 2016; Undeveloped.com parked aftermarket)</span></li>
-                <li><span class="dot red"></span> <span class="taken">sproutcoin.org — TAKEN (Apr 2025)</span></li>
-                <li><span class="dot green"></span> <span class="avail">sproutcoin.net — AVAILABLE ✓</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> Sprout + Coin.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Literal existing cryptocurrency on the GitHub handle:</strong> <strong>Sprouts (SPRTS)</strong> is a proof-of-stake cryptocurrency project started 2014. Its GitHub org is literally <code>sproutcoin/sprouts</code>, its site is sproutcoin.github.io. Listed on CoinMarketCap, Coinbase price page, LiveCoinWatch. Trading is dormant ($0 volume) but the project still owns the name in crypto. A newer <strong>Code Sprout (SPROUT)</strong> memecoin also exists on CoinGecko. Plus all the Round 6 Sprout-family caveats (Sprout Mortgage, Budget Sprout, SPROUT SAVINGS USPTO mark held by NCCU). The "Coin" suffix in 2026 is crypto territory by default.
-            </div>
-            <span class="verdict no">❌ Dead — actual "sproutcoin" cryptocurrency project owns the GitHub identity + Sprout-family crowding</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>TideKash <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Phonetic match to a predatory loan app"</div>
-            <ul class="domain-list">
-                <li><span class="dot green"></span> <span class="avail">tidekash.com — AVAILABLE ✓</span></li>
-                <li><span class="dot green"></span> <span class="avail">tidekash.org — AVAILABLE ✓</span></li>
-                <li><span class="dot green"></span> <span class="avail">tidekash.net — AVAILABLE ✓</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> Tide (currents, regular flow) + Kash.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Phonetic clash with "Tide Cash" loan app + Tide UK neobank:</strong> Domains are clean but the brand is poisoned at two levels. <strong>Tide Cash</strong> is an active Nigerian loan app on Google Play (by Anezi Martin Chibuike, 10K+ installs) with documented predatory-lending complaints — auto-disbursed loans, undisclosed terms, no CBN license. Phonetically identical to TideKash; Rise would risk association by name. <strong>Tide</strong> is also a major UK SMB neobank (tide.co, founded 2015, ~600K customers in UK + India) holding Tide marks in financial services internationally. A "TideKash" mark in Class 36 would face stiff scrutiny and reputational risk.
-            </div>
-            <span class="verdict no">❌ Dead — phonetic twin of a documented predatory loan app + Tide UK neobank in Class 36</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>TrueCents <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Already an iOS Finance app"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">truecents.com — TAKEN (Nov 2009; HugeDomains aftermarket)</span></li>
-                <li><span class="dot green"></span> <span class="avail">truecents.org — AVAILABLE ✓</span></li>
-                <li><span class="dot green"></span> <span class="avail">truecents.net — AVAILABLE ✓</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> True North salvaged as compound + cents.
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Exact-name iOS Finance app + premium .com + adjacent CU:</strong> <strong>True Cents</strong> is a live iOS app on the App Store (id 6471461765), developer Harinandan Ramdas Nair, copyright 2023, latest version 0.14.0 (Sept 2024) — expense tracking and bill splitting, listed in the <strong>Finance category</strong>. Exact-name overlap in the same App Store category Rise would target. <code>truecents.com</code> is held by <strong>HugeDomains</strong> (premium aftermarket, expect $2K–$8K+). And <strong>True North Federal Credit Union</strong> (AK, financial wellness center — Round 6's killer) creates semantic adjacency on top of it all. Three strikes.
-            </div>
-            <span class="verdict no">❌ Dead — active True Cents iOS Finance app + HugeDomains premium .com + True North FCU adjacency</span>
-        </div>
-
-        <div class="name-card conflict">
-            <h2>CentForge <span class="badge new">NEW</span> <span class="badge dead">CONFLICT</span></h2>
-            <div class="tagline">"Forge is a CU brand"</div>
-            <ul class="domain-list">
-                <li><span class="dot red"></span> <span class="taken">centforge.com — TAKEN (Jun 2025; Cloudflare/TX, private holder)</span></li>
-                <li><span class="dot green"></span> <span class="avail">centforge.org — AVAILABLE ✓</span></li>
-                <li><span class="dot green"></span> <span class="avail">centforge.net — AVAILABLE ✓</span></li>
-            </ul>
-            <div class="meaning">
-                <strong>Meaning:</strong> Cent + Forge (build, craft).
-            </div>
-            <div class="conflicts">
-                <strong>⚠️ Forge is an active CU brand + Forge Global fintech:</strong> <strong>Forge Federal Credit Union</strong> (Upper Darby PA, est. 1954, ~4,485 members, forgecu.org) offers financial-planning services — direct CU peer adjacency. Plus <strong>Forge Global</strong> (NYSE: FRGE) — private-market fintech. Class 36 confusion analysis on "CentForge" against Forge CU's services is likely to surface. <code>centforge.com</code> is also held by a private Cloudflare-shielded registrant from June 2025 — purchase cost unknown. Less workable than CedarCents / CoveCents.
-            </div>
-            <span class="verdict no">❌ Dead — Forge CU is an active credit-union brand + .com taken by private holder</span>
-        </div>
-
-    </div>
-
-    <!-- Final Recommendations -->
-    <div class="summary">
-        <h2>🏆 Round 7 Recommendations — the shortlist roughly doubles</h2>
-        <p style="color: #b0b0cc; margin-bottom: 16px;">Round 7 produced <strong>5 new green-light candidates</strong> — the most productive round yet. The recommended shortlist now spans two complementary families: the original money-stem coinages and a new PNW-nature lane.</p>
-        <ol>
-            <li><strong>RainCents</strong> — still the original strongest. All 3 domains free, zero brand conflicts, clean TM path, great PNW story.</li>
-            <li><strong>RainBux</strong> — <em>new in Round 7.</em> Sibling to RainCents on the Bux suffix. All 3 domains free, zero conflicts.</li>
-            <li><strong>RainKash</strong> — <em>new in Round 7.</em> Sibling on the Kash suffix. All 3 domains free, zero conflicts. (Rain-family now offers three suffix variants — Cents, Bux, Kash — all clean.)</li>
-            <li><strong>SproutBux</strong> — from Rounds 1–3. All 3 domains free, zero conflicts.</li>
-            <li><strong>SproutKash</strong> — from Rounds 1–3. All 3 domains free, zero conflicts.</li>
-            <li><strong>Centscope</strong> — from Round 4. All 3 domains free, no competitor.</li>
-            <li><strong>CedarCents</strong> — <em>new in Round 7.</em> Opens a "PNW nature" lane parallel to Rain-. All 3 domains free, zero conflicts. Steady, evergreen imagery.</li>
-            <li><strong>CoveCents</strong> — <em>new in Round 7.</em> Same nature lane; Cove FCU is actively sunsetting via April 2026 merger into UK CU, leaving the lane open. All 3 domains free.</li>
-            <li><strong>Centsrise</strong> — <em>new in Round 7, with one strategic decision.</em> All 3 domains free, zero conflicts. The only candidate that preserves "rise" inside the new mark — flag for stakeholder call on whether continuity from the current brand is desired.</li>
-        </ol>
-        <div class="note">
-            🟡 Round 7 yellows (workable fallbacks, not top picks):<br>
-            • <strong>CentBeacon</strong> — all 3 TLDs free, but Beacon parent root has 4+ CUs and Beacon Bank (2026 top-100 rebrand).<br>
-            • <strong>HarborBux</strong> — all 3 TLDs free, but Harbor parent root is extremely CU-crowded (HarborOne U financial education is direct adjacency).<br>
-            • <strong>PineKash</strong> — all 3 TLDs free, but Pine AI (2024 consumer-finance assistant) is a direct adjacency and Pine Labs is a global fintech giant.<br>
-            • <strong>NorthCents</strong> — all 3 TLDs free, but North + finance is descriptively crowded (True North FCU adjacency persists).<br>
-            • <strong>KashHarbor</strong> — same Harbor + Kash root risks as HarborBux, less compelling pattern.<br>
-            • <strong>SproutPenny</strong> — .org/.net free, .com just grabbed Mar 2026; same NCCU SPROUT SAVINGS TM risk that SproutBux/Kash navigated.<br>
-            • <strong>SproutVault</strong> — .org/.net free, .com investor-held; "Vault" semantically overlaps "Savings" — higher NCCU TM risk than other Sprout-family names.<br>
-            • <strong>RainVault</strong> — .org/.net free, .com on Atom marketplace + ACF West stormwater product clashes on the name (non-fintech but SEO noise).<br>
-            • <strong>CentSpark</strong> — Class 36 clean, but .com is $9.6k on HugeDomains plus apparel + manhwa search clutter.<br><br>
-            ❌ Eliminated in Round 7: <strong>RainCoin</strong> (active Rain Coin memecoin + Rain stablecoin platform $250M Series C — "Coin" suffix = crypto), <strong>RainStash</strong> (Risk of Rain wiki on .com + Stash Financial neobank root), <strong>SproutCoin</strong> (actual "sproutcoin" cryptocurrency owns GitHub identity), <strong>TideKash</strong> (phonetic twin of Tide Cash predatory loan app + Tide UK neobank), <strong>TrueCents</strong> (live True Cents iOS Finance app + HugeDomains premium .com + True North FCU adjacency), <strong>CentForge</strong> (Forge FCU is an active CU brand + Forge Global fintech).<br><br>
-            💡 <strong>Pattern observation:</strong> the coinage register continues to be the only reliable path — Rounds 5 and 6 hit walls on every dictionary word, given name, surname, and place name; Round 7 confirms that <em>invented compounds on a money-stem suffix</em> (–Cents, –Bux, –Kash) or <em>distinctive natural roots paired with money stems</em> (Cedar–, Cove–, Rain–) keep finding clean ground. Avoid "Coin" (crypto), "Stash" (neobank), "Vault" (savings TM overlap), and any compound that stacks two semi-occupied financial roots (Harbor+Kash, Pine+Kash, North+Cents).<br><br>
-            💡 Domain availability verified via direct WHOIS against the authoritative registries (Verisign for .com/.net, Public Interest Registry for .org) on May 11, 2026. Trademark and competitor signals synthesized from USPTO search, Crunchbase, App Store, Google Play, and general web results. Confirm with your registrar and a USPTO examiner at purchase/filing time — fresh registrations happen daily.
-        </div>
-    </div>
-
-    <!-- Round 6 Recommendations (kept for history) -->
-    <div class="summary" style="margin-top: 32px;">
-        <h2>🏆 Round 6 Recommendations</h2>
-        <p style="color: #b0b0cc; margin-bottom: 16px;">Round 6 produced no new survivors that beat the existing shortlist. The Round 1–4 shortlist stands unchanged.</p>
-        <ol>
-            <li><strong>RainCents</strong> — still the strongest overall. All 3 domains free, zero brand conflicts, clean trademark path, great PNW story.</li>
-            <li><strong>SproutBux</strong> — tied for second. All 3 domains free, zero conflicts, fun and memorable. (Round 6 confirmed: solo "Sprout" is locked up in finance, which is exactly why the SproutBux/SproutKash compounds carve out distinctiveness.)</li>
-            <li><strong>SproutKash</strong> — third. All 3 domains free, no conflicts.</li>
-            <li><strong>Centscope</strong> — from Round 4. All 3 domains free, no fintech competitor, no USPTO hit.</li>
-        </ol>
-        <div class="note">
-            🟡 New yellows from Round 6 (workable fallbacks, not top picks):<br>
-            • <strong>Financial Helping Hands</strong> — rare in that all 3 TLDs are open, but descriptive in Class 36, 24 characters / 3 words, and the underlying "Helping Hands" phrase is contested by credit-union financial-literacy programs and a pending USPTO Class-36-adjacent filing.<br>
-            • <strong>TrackCents</strong> — coinage register matches RainCents/Centscope; no exact-match competitor; .org/.net free; .com held by a silent 2013-vintage squatter (acquirable but unverified).<br>
-            • <strong>TrackCash</strong> — no fintech competitor, but .com on Afternic aftermarket, App Store collision with an existing TrackCash baggage-tracking app, and .org was just registered Nov 2025.<br>
-            • <strong>FinCoachConnect</strong> — all 3 domains free, but same problem Round 4's FinCoachIQ had: inherits brand noise from the saturated "FinCoach" cluster (8+ active brands).<br><br>
-            ❌ Eliminated in Round 6: <strong>True North</strong> (True North FCU runs a financial-wellness center under this exact name), <strong>Beacon</strong> (4+ "Beacon" credit unions), <strong>Sprout</strong> (Sprout Mortgage + Budget Sprout + 4 more — use SproutBux/SproutKash instead), <strong>Wellbeing</strong> (descriptive category term), <strong>Connect</strong> (HubSpot owns .com; generic), <strong>Community Bridge</strong> (Bridge CU adjacency + all TLDs gone), <strong>KashTrack</strong> (live shipping AI-budgeting app owns the name and both app stores), <strong>Budget Tracker</strong> (generic + 22-year incumbent), <strong>Upwards</strong> (Upward CU + Upwards India NBFC), <strong>FinCoach</strong> (Round 4 status holds; more competitors than before), <strong>CABL</strong> (active 30-yr LSU site + acronym overloaded in finance), <strong>BAFL</strong> (Bank Alfalah PSX ticker), <strong>Helping Hands</strong> (multiple CU "Helping Hands" programs + active USPTO filing), <strong>Bridge</strong> (Stripe paid $1.1B; multiple CUs already on the name), <strong>Cash Bridge</strong> (5+ active CashBridge lenders worldwide), <strong>Do Good</strong> (DuGood FCU phonetic match), <strong>Community</strong> (premium .com held by funded tech company; word generic in banking), <strong>Guide</strong> (Guide.com active AI travel app; generic in finance), <strong>Prosper</strong> (Prosper Marketplace, $23B+ loans, fortress-locked), <strong>Grow</strong> (Grow Financial FCU — identical brand, identical product).<br><br>
-            💡 <strong>Pattern observation, now confirmed across three rounds:</strong> every single English word and generic phrase tested in Rounds 4–6 had a 1990s/2000s .com holder AND an active financial-services brand on the name — usually a credit union running a financial-wellness program. The credit-union space has been claiming common-word brand names for decades. <em>Invented coinages</em> (RainCents, SproutBux, SproutKash, Centscope) remain the only clean path. Future rounds should stay in that register.<br><br>
-            💡 Domain availability verified via direct WHOIS against the authoritative registries (Verisign for .com/.net, Public Interest Registry for .org) on May 11, 2026. Trademark and competitor signals synthesized from USPTO search, Crunchbase, App Store, Google Play, and general web results. Confirm with your registrar and a USPTO examiner at purchase/filing time — fresh registrations happen daily.
-        </div>
-    </div>
-
-    <!-- Round 5 Recommendations (kept for history) -->
-    <div class="summary" style="margin-top: 32px;">
-        <h2>🏆 Round 5 Recommendations</h2>
-        <p style="color: #b0b0cc; margin-bottom: 16px;">Round 5 produced no new survivors. The shortlist from Rounds 1–4 stands unchanged.</p>
-        <ol>
-            <li><strong>RainCents</strong> — still the strongest overall. All 3 domains free, zero brand conflicts, clean trademark path, great PNW story.</li>
-            <li><strong>SproutBux</strong> — tied for second. All 3 domains free, zero conflicts, fun and memorable.</li>
-            <li><strong>SproutKash</strong> — third. All 3 domains free, no conflicts, slightly edgier than SproutBux thanks to the K-spelling.</li>
-            <li><strong>Centscope</strong> — from Round 4. All 3 domains free, no fintech competitor, no USPTO hit. Tonally adjacent to "periscope" — suggests clarity and observation.</li>
-        </ol>
-        <div class="note">
-            ❌ Eliminated in Round 5: <strong>Dora</strong> (Dora Financial — credit-union CUSO with Rise's exact mission, plus Viacom/EU DORA/Google DORA brand saturation), <strong>Maxwell</strong> (Maxwell Financial Labs — registered USPTO TM in Class 9/036 covering credit-union lending software), <strong>Pierre</strong> (Piere — phonetically identical CUNA-Mutual-backed self-driving-money fintech), <strong>Herring</strong> (Herring Bank — 125-year federally-chartered community bank), <strong>Alex</strong> (Alex Finance NYC D2C coach + $500K+ .com floor), <strong>Xander</strong> (Xander Finance India NBFC + Xander Insurance brands + Zander homophone), <strong>Piedmont</strong> (Piedmont Advantage Credit Union + 1918 historic Piedmont Credit Union + Piedmont Healthcare on .org), <strong>Green Goals</strong> (climate-fintech positioning mismatch + all TLDs speculator-held), <strong>Treasure</strong> (Treasure Financial + Treasure Card in Class 36 + Treasure DAO crypto noise).<br><br>
-            🟡 Borderline: <strong>$ucceed / Succeed</strong> — no direct fintech competitor, but the <code>$</code> can't live in a domain, <code>succeed.com</code> is on Efty (mid-5-to-low-6-figure floor), <code>succeed.net</code> is a live NorCal ISP, and "succeed" is a generic verb with weak USPTO distinctiveness. Only workable if the stylization is worth the tradeoffs.<br><br>
-            💡 <strong>Pattern observation:</strong> every dictionary word, given name, surname, and place name tested in Round 5 had a .com registered between 1994–2009 and an active fintech or financial-services competitor on the name. Pre-2000 English vocabulary is effectively exhausted for consumer-finance naming — <em>invented coinages</em> (RainCents, SproutBux, SproutKash, Centscope) remain the only clean path. Future rounds should stay in that register.<br><br>
-            💡 Domain availability verified via direct WHOIS against the authoritative registries (Verisign for .com/.net, Public Interest Registry for .org) on April 22, 2026. Trademark and competitor signals synthesized from USPTO search, Crunchbase, App Store, Google Play, and general web results. Confirm with your registrar and a USPTO examiner at purchase/filing time — fresh registrations happen daily.
-        </div>
-    </div>
-
-    <!-- Round 4 Recommendations (kept for history) -->
-    <div class="summary" style="margin-top: 32px;">
-        <h2>🏆 Round 4 Recommendations</h2>
-        <p style="color: #b0b0cc; margin-bottom: 16px;">After Round 4 research, the ranking tightens to one strong new entrant plus the three carried-over top picks.</p>
-        <ol>
-            <li><strong>RainCents</strong> — still the strongest overall. All 3 domains free, zero brand conflicts, clean trademark path, great PNW story.</li>
-            <li><strong>SproutBux</strong> — tied for second. All 3 domains free, zero conflicts, fun and memorable.</li>
-            <li><strong>SproutKash</strong> — third. All 3 domains free, no conflicts, slightly edgier than SproutBux thanks to the K-spelling.</li>
-            <li><strong>Centscope</strong> — <em>new in Round 4.</em> All 3 domains free, no fintech competitor, no USPTO hit. The only Round 4 name that clears every bar. Tonally adjacent to "periscope" — suggests clarity and observation, which fits a financial-visibility product.</li>
-            <li><strong>FinCoachIQ</strong> — <em>new in Round 4, with caveats.</em> All 3 domains free, but lives inside a saturated "FinCoach" brand space. Workable if we're willing to own the disambiguation work.</li>
-        </ol>
-        <div class="note">
-            ❌ Eliminated in Round 4: <strong>FinCoach</strong> (8+ active brands + all domains gone), <strong>ProsperIQ</strong> (active nonprofit in Rise's mission space), <strong>CashCompass</strong> (three live budgeting apps + all domains), <strong>FinCompass</strong> (all domains gone), <strong>FinVoyage</strong> (active Google Play investment app), <strong>Navify</strong> (Roche Diagnostics' registered global brand), <strong>WealthWayfinder</strong> (live finance-content site), <strong>WealthTrekker</strong> ("Wealth" mismatches Rise positioning), <strong>Waylytics</strong> (wrong category register), <strong>Levara</strong> (all 3 standard TLDs gone), <strong>Ascenda</strong> (global fintech loyalty provider), <strong>Ascensia</strong> (registered USPTO TM, diabetes care), <strong>Riko</strong> (premium legacy domains), <strong>Prosperon</strong> (direct competitor in college financial education).<br><br>
-            🟡 Workable as fallbacks (.org/.net path, no direct fintech conflict but .com compromised): <strong>Budgetarium</strong>, <strong>BudgetNavigator</strong>, <strong>KashIQ</strong>, <strong>FinPathfinder</strong>, <strong>KashCompass</strong>, <strong>ProsperQuest</strong>.<br><br>
-            💡 Domain availability verified via direct WHOIS against the authoritative registries (Verisign for .com/.net, Public Interest Registry for .org) on April 16, 2026. Trademark and competitor signals synthesized from USPTO search, Crunchbase, App Store, Google Play, and general web results. Confirm with your registrar and a USPTO examiner at purchase/filing time — fresh registrations happen daily.
-        </div>
-    </div>
-
+            <span class="verdict maybe">⚡ .org/.net free — but .com taken (2012) by active Singapore fintech KashLab Pte Ltd</span>
 </div>
+</div>
+
+<!-- Modal -->
+<div class="modal" id="modal" role="dialog" aria-modal="true">
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-card">
+        <button class="modal-close" data-close aria-label="Close">×</button>
+        <div class="modal-body" id="modal-body"></div>
+    </div>
+</div>
+
+<script>
+(function() {
+    const modal = document.getElementById('modal');
+    const body = document.getElementById('modal-body');
+    function openModal(id) {
+        const src = document.getElementById(id);
+        if (!src) return;
+        body.innerHTML = src.innerHTML;
+        modal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeModal() {
+        modal.classList.remove('open');
+        document.body.style.overflow = '';
+    }
+    document.querySelectorAll('.tile').forEach(t => {
+        t.addEventListener('click', () => openModal(t.dataset.cardId));
+        t.addEventListener('keydown', e => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(t.dataset.cardId); }
+        });
+        t.setAttribute('tabindex', '0');
+        t.setAttribute('role', 'button');
+    });
+    modal.querySelectorAll('[data-close]').forEach(el => {
+        el.addEventListener('click', closeModal);
+    });
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+    });
+})();
+</script>
 
 </body>
 </html>
